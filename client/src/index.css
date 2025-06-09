@@ -1,0 +1,33 @@
+@import "tailwindcss";
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: #374151;
+}
+.backgroundHeader {
+  background-color: #c4e1e6;
+}
+.backgroundColorMenuTaskbar {
+  background-color: #e7eced;
+}
+.itemCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.itemStart {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+.itemTop {
+  display: flex;
+  justify-content: center;
+  align-items: start;
+}
+.menuTaskbar {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.menuTaskbar:hover {
+  background-color: #c4e1e6;
+}

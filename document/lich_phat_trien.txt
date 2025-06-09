@@ -1,0 +1,43 @@
+🔍 1. Phân tích hệ thống
+🎯 Chức năng chính:
+1.1. Đăng nhập/Đăng xuất (Authentication)
+Dựa trên bảng Tài khoản, Người dùng, Nhóm quyền, Chi tiết quyền, Chức năng.
+
+1.2. Quản lý sân
+CRUD bảng Sân, liên kết Loại sân, Giá thuê, Khung giờ.
+
+1.3. Quản lý đặt sân
+Tạo phiếu đặt (Đặt sân)
+
+Ghi nhận thông tin thời gian, khách hàng, tổng giá
+
+Quản lý chi tiết đơn hàng (Chi tiết đặt sân - thêm sản phẩm: nước, vợt…)
+
+1.4. Quản lý sản phẩm
+Dữ liệu từ bảng Sản phẩm, Loại sản phẩm
+
+1.5. Quản lý người dùng và khách hàng
+Người dùng (quản trị viên, nhân viên)
+
+Khách hàng (thông tin người đặt sân)
+
+1.6. Phân quyền hệ thống
+Nhóm quyền → Chi tiết quyền → Chức năng
+
+🗓️ 2. Kế hoạch triển khai 15 ngày
+Ngày	Công việc chính	Mô tả
+1	Cài đặt môi trường	Cấu hình dự án với ReactJS (Vite), NodeJS (Express), Sequelize ORM, MySQL
+2	Thiết kế database	Tạo các bảng từ sơ đồ ERD bằng Sequelize hoặc SQL script
+3	Xây dựng backend: auth	REST API cho đăng nhập, JWT, hash mật khẩu
+4	Xây dựng frontend: auth	Giao diện đăng nhập, phân quyền dashboard
+5	API quản lý sân	GET, POST, PUT, DELETE cho bảng Sân, Loại sân, Giá thuê, Khung giờ
+6	UI quản lý sân	React giao diện CRUD sân, lọc theo khung giờ
+7	API quản lý sản phẩm	Tương tác bảng Sản phẩm, Loại sản phẩm
+8	UI quản lý sản phẩm	Trang thêm/sửa/xóa sản phẩm, upload hình ảnh
+9	API đặt sân	Tạo phiếu đặt, thêm sản phẩm, kiểm tra giờ
+10	UI đặt sân	Chọn sân, chọn giờ, thêm sản phẩm kèm, tổng tiền
+11	Quản lý khách hàng	CRUD bảng Khách hàng, lọc theo lịch sử đặt
+12	Phân quyền	Gán quyền thao tác dựa trên Chi tiết quyền
+13	Test toàn bộ API	Kiểm tra logic đặt sân, xung đột giờ, giới hạn quyền
+14	UI tổng hợp dashboard	Thống kê sân đang đặt, doanh thu, sản phẩm bán kèm
+15	Triển khai thử nghiệm	Build production, test trên server, chuẩn bị demo

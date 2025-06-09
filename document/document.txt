@@ -1,0 +1,18 @@
+0	Xóa			Đã xóa khỏi database
+1	Rảnh (Hoạt động)	Sân đang hoạt động và chưa có ai đặt, sẵn sàng để thuê
+2	Đã đặt trước		Có người đặt trước sân trong khung giờ cụ thể
+3	Đang sử dụng		Đang có người chơi tại sân, chưa kết thúc thời gian thuê
+4	Bảo trì	Sân tạm 	thời không sử dụng được do đang sửa chữa, bảo trì
+5	Không hoạt động		Sân không hoạt động vĩnh viễn hoặc trong một khoảng thời gian dài
+6	Chờ thanh toán		Sân đã sử dụng xong, đang chờ khách thanh toán phí thuê
+7	Đã thanh toán		Sân đã được sử dụng và thanh toán đầy đủ
+
+1. Người dùng: MaNguoiDung (PK), Email, Họ tên, SĐT, CCCD, Địa chỉ, Giới tính, Ngày sinh, Trạng thái
+
+2. Tài khoản: MaNhanVien (PK), MaNhomQuyen (FK) → Nhóm quyền, Tên đăng nhập, Mật khẩu, Trạng thái
+
+3. Nhóm quyền: MaNhomQuyen (PK), Tên nhóm quyền, Trạng thái
+
+4. Danh mục chức năng: MaChucNang (PK), Tên chức năng, Trạng thái
+
+5. Chi tiết quyền: MaNhomQuyen (FK), MaChucNang (FK), Hành động (Xem, Sửa, Xóa, Thêm...), Trạng thái
