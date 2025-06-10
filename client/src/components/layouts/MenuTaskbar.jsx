@@ -52,7 +52,7 @@ const MenuTaskbar = () => {
         })}
       </div>
 
-      <div className="bg-amber-100 h-10 border-t-2">
+      <div className="bg-amber-100 h-10  ">
         <div
           className="p-2 itemCenter h-full menuTaskbar"
           onClick={() => setShowDialogLogout(true)}

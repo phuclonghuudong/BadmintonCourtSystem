@@ -1,5 +1,10 @@
+import { useNavigate } from "react-router-dom";
+
 const DialogLogout = ({ onConfirm, onCancel }) => {
+  const navigate = useNavigate();
+
   const handleLogout = () => {
+    navigate("/login");
     console.log("Đã đăng xuất");
     onCancel();
   };

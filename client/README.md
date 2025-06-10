@@ -1,6 +1,7 @@
 Màu sắc: https://colorhunt.co
 Icon: https://fontawesome.com/icons
 Tailwind Cheat Sheet: https://nerdcave.com/tailwind-cheat-sheet
+Tailwind CSS: https://tailwindcss.com
 
 Cấu trúc:
 client/
