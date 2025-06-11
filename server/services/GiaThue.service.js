@@ -21,15 +21,11 @@ const getGiaThueById = async (MaGiaThue) => {
 };
 
 const createGiaThue = async (data) => {
+  const newID = await generateNewId();
   return await prisma.giaThue.create({
     data: {
-      MaGiaThue: data.MaGiaThue,
-      MaSan: data.MaSan,
-      MaKhungGio: data.MaKhungGio,
-      ThuTrongTuan: data.ThuTrongTuan,
-      GiaTien: data.GiaTien,
-      MoTa: data.MoTa || "",
-      TrangThai: data.TrangThai ?? true,
+      MaGiaThue: newID,
+      ...data,
     },
   });
 };
@@ -56,6 +52,22 @@ const getGiaThueBySanKhungGioThu = async (MaSan, MaKhungGio, ThuTrongTuan) => {
       TrangThai: true,
     },
   });
+};
+
+const generateNewId = async () => {
+  const last = await prisma.giaThue.findFirst({
+    orderBy: {
+      MaGiaThue: "desc",
+    },
+  });
+
+  if (!last) {
+    return "GIA001";
+  }
+
+  const lastNumber = parseInt(last.MaGiaThue.replace("GIA", ""));
+  const newNumber = (lastNumber + 1).toString().padStart(3, "0");
+  return `GIA${newNumber}`;
 };
 
 module.exports = {

@@ -19,9 +19,10 @@ const getKhungGioById = async (id) => {
 };
 
 const createKhungGio = async (data) => {
+  const newID = await generateNewId();
   return await prisma.khungGio.create({
     data: {
-      MaKhungGio: data.MaKhungGio,
+      MaKhungGio: newID,
       GioBatDau: data.GioBatDau,
       GioKetThuc: data.GioKetThuc,
       MoTa: data.MoTa || "",
@@ -41,6 +42,22 @@ const deleteKhungGio = async (id) => {
   return await prisma.khungGio.delete({
     where: { MaKhungGio: id },
   });
+};
+
+const generateNewId = async () => {
+  const last = await prisma.khungGio.findFirst({
+    orderBy: {
+      MaKhungGio: "desc",
+    },
+  });
+
+  if (!last) {
+    return "KG001";
+  }
+
+  const lastNumber = parseInt(last.MaKhungGio.replace("KG", ""));
+  const newNumber = (lastNumber + 1).toString().padStart(3, "0");
+  return `KG${newNumber}`;
 };
 
 module.exports = {

@@ -19,12 +19,11 @@ const getLoaiSanPhamById = async (MaLoaiSanPham) => {
 };
 
 const createLoaiSanPham = async (data) => {
+  const newID = await generateNewId();
   return await prisma.loaiSanPham.create({
     data: {
-      MaLoaiSanPham: data.MaLoaiSanPham,
-      TenLoaiSanPham: data.TenLoaiSanPham,
-      MoTa: data.MoTa || "",
-      TrangThai: data.TrangThai ?? true,
+      MaLoaiSanPham: newID,
+      ...data,
     },
   });
 };
@@ -35,6 +34,14 @@ const updateLoaiSanPham = async (MaLoaiSanPham, data) => {
     data,
   });
 };
+const deleteLoaiSanPhamXoa = async (MaLoaiSanPham, data) => {
+  return await prisma.loaiSanPham.update({
+    where: { MaLoaiSanPham },
+    data: {
+      TrangThai: -1,
+    },
+  });
+};
 
 const deleteLoaiSanPham = async (MaLoaiSanPham) => {
   return await prisma.loaiSanPham.delete({
@@ -42,10 +49,27 @@ const deleteLoaiSanPham = async (MaLoaiSanPham) => {
   });
 };
 
+const generateNewId = async () => {
+  const last = await prisma.loaiSanPham.findFirst({
+    orderBy: {
+      MaLoaiSanPham: "desc",
+    },
+  });
+
+  if (!last) {
+    return "LSP001";
+  }
+
+  const lastNumber = parseInt(last.MaLoaiSanPham.replace("LSP", ""));
+  const newNumber = (lastNumber + 1).toString().padStart(3, "0");
+  return `LSP${newNumber}`;
+};
+
 module.exports = {
   getAllLoaiSanPham,
   getLoaiSanPhamById,
   createLoaiSanPham,
   updateLoaiSanPham,
+  deleteLoaiSanPhamXoa,
   deleteLoaiSanPham,
 };

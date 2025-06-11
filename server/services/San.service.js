@@ -22,13 +22,11 @@ const getSanById = async (id) => {
 };
 
 const createSan = async (data) => {
+  const newID = await generateNewId();
   return await prisma.san.create({
     data: {
-      MaSan: data.MaSan,
-      MaLoaiSan: data.MaLoaiSan,
-      TenSan: data.TenSan,
-      MoTa: data.MoTa,
-      TrangThai: data.TrangThai ?? true,
+      MaSan: newID,
+      ...data,
     },
   });
 };
@@ -49,6 +47,22 @@ const deleteSan = async (id) => {
   return await prisma.san.delete({
     where: { MaSan: id },
   });
+};
+
+const generateNewId = async () => {
+  const last = await prisma.san.findFirst({
+    orderBy: {
+      MaSan: "desc",
+    },
+  });
+
+  if (!last) {
+    return "SAN001";
+  }
+
+  const lastNumber = parseInt(last.MaSan.replace("SAN", ""));
+  const newNumber = (lastNumber + 1).toString().padStart(3, "0");
+  return `SAN${newNumber}`;
 };
 
 module.exports = {

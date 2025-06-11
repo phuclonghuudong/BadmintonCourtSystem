@@ -19,14 +19,15 @@ const getSanPhamById = async (id) => {
 };
 
 const createSanPham = async (data) => {
+  const newID = await generateNewId();
   return await prisma.sanPham.create({
     data: {
-      MaSanPham: data.MaSanPham,
+      MaSanPham: newID,
       MaLoaiSanPham: data.MaLoaiSanPham,
       TenSanPham: data.TenSanPham,
       DonViTinh: data.DonViTinh || null,
       HinhAnh: data.HinhAnh || null,
-      TrangThai: data.TrangThai ?? true,
+      TrangThai: data.TrangThai,
     },
   });
 };
@@ -51,6 +52,22 @@ const getSanPhamByLoai = async (id) => {
       LoaiSanPham: true,
     },
   });
+};
+
+const generateNewId = async () => {
+  const last = await prisma.sanPham.findFirst({
+    orderBy: {
+      MaSanPham: "desc",
+    },
+  });
+
+  if (!last) {
+    return "SP001";
+  }
+
+  const lastNumber = parseInt(last.MaSanPham.replace("SP", ""));
+  const newNumber = (lastNumber + 1).toString().padStart(3, "0");
+  return `SP${newNumber}`;
 };
 
 module.exports = {

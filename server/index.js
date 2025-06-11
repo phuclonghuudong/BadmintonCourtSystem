@@ -10,12 +10,9 @@ const app = express();
 app.use(express.json());
 
 const url = process.env.SERVER_URL;
-const khachHangRoutes = require("./routes/KhachHang.routes");
-const nhomQuyenRoutes = require("./routes/NhomQuyen.routes");
 
-const errorHandler = require("./middlewares/errorHandler");
-
-const timeZoneMiddleware = require("./middlewares/timeZone");
+const errorHandler = require("./utils/errorHandler");
+const timeZoneMiddleware = require("./utils/timeZone");
 app.use(timeZoneMiddleware);
 
 app.use(
@@ -27,7 +24,7 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
-app.use(morgan());
+app.use(morgan("dev"));
 app.use(
   helmet({
     crossOriginResourcePolicy: false,
@@ -35,15 +32,15 @@ app.use(
 );
 
 // Routes
-app.use("/khach-hang", khachHangRoutes);
-app.use("/nhom-quyen", nhomQuyenRoutes);
+const mainRouter = require("./routes");
+app.use("/", mainRouter);
 
 app.get("/", (req, res) => {
   res.send("Badminton server management system.");
 });
 
+app.use(errorHandler);
+
 app.listen(port, () => {
   console.log(`Server is running at ${url}${port}`);
 });
-
-app.use(errorHandler);

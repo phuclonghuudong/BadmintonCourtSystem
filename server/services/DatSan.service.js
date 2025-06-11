@@ -34,16 +34,19 @@ const getDatSanById = async (MaPhieuDatSan) => {
 
 // Tạo phiếu đặt sân mới
 const createDatSan = async (data) => {
+  const newID = await generateNewId();
   return await prisma.datSan.create({
     data: {
-      MaPhieuDatSan: data.MaPhieuDatSan,
+      MaPhieuDatSan: newID,
       MaSan: data.MaSan,
       MaKhachHang: data.MaKhachHang,
       NgayDat: new Date(data.NgayDat),
       Checkin: new Date(data.Checkin),
       CheckOut: new Date(data.CheckOut),
       GiaSan: data.GiaSan,
-      NgaySinh: data.NgaySinh ? new Date(data.NgaySinh) : null,
+      TongTien: data.TongTien,
+      ThanhToan: data.ThanhToan,
+      GhiChu: data.GhiChu,
       TrangThai: data.TrangThai ?? true,
     },
   });
@@ -53,7 +56,7 @@ const createDatSan = async (data) => {
 const updateDatSan = async (MaPhieuDatSan, data) => {
   return await prisma.datSan.update({
     where: { MaPhieuDatSan },
-    data,
+    data: data,
   });
 };
 
@@ -73,6 +76,22 @@ const getDatSanByKhachHang = async (MaKhachHang) => {
       ChiTietDatSan: true,
     },
   });
+};
+
+const generateNewId = async () => {
+  const last = await prisma.datSan.findFirst({
+    orderBy: {
+      MaPhieuDatSan: "desc",
+    },
+  });
+
+  if (!last) {
+    return "DATSAN0001";
+  }
+
+  const lastNumber = parseInt(last.MaPhieuDatSan.replace("DATSAN", ""));
+  const newNumber = (lastNumber + 1).toString().padStart(4, "0");
+  return `DATSAN${newNumber}`;
 };
 
 module.exports = {
