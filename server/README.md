@@ -1,5 +1,9 @@
 https://www.prisma.io/
-https://pris.ly/d/getting-started
+https://pris.ly/d/getting-
+
+FRONTEND_URL = http://localhost:5173
+SERVER_URL = http://localhost:
+DATABASE_URL="mysql://root:123456@localhost:3306/badminton_server_management_system"
 
 B1: npm install @prisma/client mysql2
 B2: npm install -D prisma
