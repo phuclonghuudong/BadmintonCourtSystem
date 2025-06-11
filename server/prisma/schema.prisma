@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -8,9 +7,192 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
+model NguoiDung {
+  MaNguoiDung String   @id
+  Email       String?
+  HoTen       String?
+  SoDienThoai String?
+  CCCD        String?
+  DiaChi      String?
+  GioiTinh    String?
+  NgaySinh    DateTime?
+  TrangThai   Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  TaiKhoan    TaiKhoan?
 }
 
+model TaiKhoan {
+  MaNhanVien     String   @id
+  MaNhomQuyen    String
+  TenDangNhap    String
+  MatKhau        String
+  TrangThai      Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  NguoiDung      NguoiDung @relation(fields: [MaNhanVien], references: [MaNguoiDung])
+  NhomQuyen      NhomQuyen @relation(fields: [MaNhomQuyen], references: [MaNhomQuyen])
+}
+
+model NhomQuyen {
+  MaNhomQuyen   String   @id
+  TenNhomQuyen  String
+  TrangThai     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  TaiKhoan      TaiKhoan[]
+  ChiTietQuyen  ChiTietQuyen[]
+}
+
+model DanhMucChucNang {
+  MaChucNang    String   @id
+  TenChucNang   String
+  TrangThai     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  ChiTietQuyen  ChiTietQuyen[]
+}
+
+model ChiTietQuyen {
+  MaNhomQuyen   String
+  MaChucNang    String
+  HanhDong      String
+  TrangThai     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  NhomQuyen     NhomQuyen @relation(fields: [MaNhomQuyen], references: [MaNhomQuyen])
+  DanhMucChucNang DanhMucChucNang @relation(fields: [MaChucNang], references: [MaChucNang])
+
+  @@id([MaNhomQuyen, MaChucNang])
+}
+
+model LoaiSan {
+  MaLoaiSan     String   @id
+  TenLoaiSan    String
+  MoTa          String?
+  TrangThai     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  San           San[]
+}
+
+model San {
+  MaSan         String   @id
+  MaLoaiSan     String
+  TenSan        String
+  MoTa          String?
+  TrangThai     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  LoaiSan       LoaiSan @relation(fields: [MaLoaiSan], references: [MaLoaiSan])
+  GiaThue       GiaThue[]
+  DatSan        DatSan[]
+}
+
+model KhungGio {
+  MaKhungGio    String   @id
+  GioBatDau     String
+  GioKetThuc    String
+  MoTa          String?
+  TrangThai     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  GiaThue       GiaThue[]
+}
+
+model GiaThue {
+  MaGiaThue     String   @id
+  MaSan         String
+  MaKhungGio    String
+  ThuTrongTuan  String
+  GiaTien       Float
+  MoTa          String?
+  TrangThai     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  San           San       @relation(fields: [MaSan], references: [MaSan])
+  KhungGio      KhungGio  @relation(fields: [MaKhungGio], references: [MaKhungGio])
+}
+
+model KhachHang {
+  MaKhachHang   String   @id
+  Email         String?
+  HoTen         String?
+  SoDienThoai   String?
+  CCCD          String?
+  DiaChi        String?
+  GioiTinh      String?
+  NgaySinh      DateTime?
+  TrangThai     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  DatSan        DatSan[]
+}
+
+model DatSan {
+  MaPhieuDatSan String   @id
+  MaSan         String
+  MaKhachHang   String
+  NgayDat       DateTime
+  Checkin       DateTime
+  CheckOut      DateTime
+  GiaSan        Float
+  NgaySinh      DateTime?
+  TrangThai     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  San           San        @relation(fields: [MaSan], references: [MaSan])
+  KhachHang     KhachHang  @relation(fields: [MaKhachHang], references: [MaKhachHang])
+  ChiTietDatSan ChiTietDatSan[]
+}
+
+model LoaiSanPham {
+  MaLoaiSanPham String   @id
+  TenLoaiSanPham String
+  MoTa           String?
+  TrangThai      Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  SanPham        SanPham[]
+}
+
+model SanPham {
+  MaSanPham     String   @id
+  MaLoaiSanPham String
+  TenSanPham    String
+  DonViTinh     String?
+  HinhAnh       String?
+  TrangThai     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  LoaiSanPham   LoaiSanPham @relation(fields: [MaLoaiSanPham], references: [MaLoaiSanPham])
+  ChiTietDatSan ChiTietDatSan[]
+}
+
+model ChiTietDatSan {
+  MaCTDS        String   @id
+  MaPhieuDatSan String
+  MaSanPham     String
+  GiaBan        Float
+  SoLuong       Int
+  MoTa          String?
+  TrangThai     Int?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  DatSan        DatSan    @relation(fields: [MaPhieuDatSan], references: [MaPhieuDatSan])
+  SanPham       SanPham   @relation(fields: [MaSanPham], references: [MaSanPham])
+}

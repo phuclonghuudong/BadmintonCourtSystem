@@ -7,11 +7,17 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const port = 2410;
 const app = express();
+app.use(express.json());
 
 const url = process.env.SERVER_URL;
-console.log(url);
+const khachHangRoutes = require("./routes/KhachHang.routes");
+const nhomQuyenRoutes = require("./routes/NhomQuyen.routes");
 
-app.use(express.json());
+const errorHandler = require("./middlewares/errorHandler");
+
+const timeZoneMiddleware = require("./middlewares/timeZone");
+app.use(timeZoneMiddleware);
+
 app.use(
   cors({
     credentials: true,
@@ -28,6 +34,10 @@ app.use(
   })
 );
 
+// Routes
+app.use("/khach-hang", khachHangRoutes);
+app.use("/nhom-quyen", nhomQuyenRoutes);
+
 app.get("/", (req, res) => {
   res.send("Badminton server management system.");
 });
@@ -35,3 +45,5 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running at ${url}${port}`);
 });
+
+app.use(errorHandler);
