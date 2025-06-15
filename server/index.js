@@ -11,7 +11,7 @@ app.use(express.json());
 
 const url = process.env.SERVER_URL;
 
-const errorHandler = require("./utils/errorHandler");
+const errorMainHandler = require("./utils/errorMainHandler");
 const timeZoneMiddleware = require("./utils/timeZone");
 app.use(timeZoneMiddleware);
 
@@ -39,7 +39,7 @@ app.get("/", (req, res) => {
   res.send("Badminton server management system.");
 });
 
-app.use(errorHandler);
+app.use(errorMainHandler);
 
 app.listen(port, () => {
   console.log(`Server is running at ${url}${port}`);

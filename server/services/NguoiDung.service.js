@@ -24,6 +24,12 @@ const updateUser = async (id, data) => {
     data: data,
   });
 };
+const deleteUserXoa = async (id, data) => {
+  return await prisma.nguoiDung.update({
+    where: { MaNguoiDung: id },
+    data: { TrangThai: -1 },
+  });
+};
 
 const deleteUser = async (id) => {
   return await prisma.nguoiDung.delete({
@@ -47,10 +53,26 @@ const generateNewId = async () => {
   return `ND${newNumber}`;
 };
 
+const findByEmail = async (email) => {
+  return await prisma.nguoiDung.findUnique({ where: { Email: email } });
+};
+
+const findByPhone = async (phone) => {
+  return await prisma.nguoiDung.findUnique({ where: { SoDienThoai: phone } });
+};
+
+const findByCCCD = async (cccd) => {
+  return await prisma.nguoiDung.findUnique({ where: { CCCD: cccd } });
+};
+
 module.exports = {
   getAllUsers,
   getUserById,
   createUser,
   updateUser,
   deleteUser,
+  deleteUserXoa,
+  findByEmail,
+  findByPhone,
+  findByCCCD,
 };

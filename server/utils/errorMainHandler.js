@@ -1,13 +1,30 @@
-const errorHandler = (res, message, statusCode = 500, errorData = null) => {
-  return res.status(statusCode).json({
-    MESSAGE: message,
+const errorMainHandler = (err, req, res, next) => {
+  console.error("Lỗi:", err);
+
+  if (err.name === "NotFoundError") {
+    return res
+      .status(404)
+      .json({ ERROR: true, SUCCESS: false, MESSAGE: err.message });
+  }
+
+  if (err.name === "PrismaClientKnownRequestError") {
+    if (err.code === "P2002") {
+      return res.status(409).json({
+        ERROR: true,
+        SUCCESS: false,
+        MESSAGE: `Dữ liệu đã tồn tại: ${err.meta.target.join(", ")}`,
+      });
+    }
+  }
+
+  res.status(500).json({
     ERROR: true,
     SUCCESS: false,
-    DATA: errorData,
+    MESSAGE: `Đã xảy ra lỗi nội bộ: ${err.message}`,
   });
 };
 
-module.exports = errorHandler;
+module.exports = errorMainHandler;
 
 // 5xx – Lỗi từ phía server (Server Error)
 // 500 Internal Server Error	Lỗi server chung chung	- Bất kỳ lỗi không xác định được

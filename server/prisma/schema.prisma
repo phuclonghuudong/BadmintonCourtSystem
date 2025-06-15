@@ -9,14 +9,15 @@ datasource db {
 
 model NguoiDung {
   MaNguoiDung String   @id
-  Email       String?
-  HoTen       String?
-  SoDienThoai String?
-  CCCD        String?
+  Email       String   @unique
+  HoTen       String   @unique  
+  SoDienThoai String   @unique
+  CCCD        String   @unique
   DiaChi      String?
-  GioiTinh    String?
+  GioiTinh    Int?
   NgaySinh    DateTime?
-  TrangThai   Int?
+  Avatar      String?
+  TrangThai   Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -26,9 +27,13 @@ model NguoiDung {
 model TaiKhoan {
   MaNhanVien     String   @id
   MaNhomQuyen    String
-  TenDangNhap    String
+  TenDangNhap    String    @unique
   MatKhau        String
-  TrangThai      Int?
+  VerifyEmail    Boolean?  
+  ForgotPasswordOtp     String?
+  ForgotPasswordExpiry  DateTime?
+  RefreshToken         String @db.VarChar(500)
+  TrangThai      Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -38,8 +43,8 @@ model TaiKhoan {
 
 model NhomQuyen {
   MaNhomQuyen   String   @id
-  TenNhomQuyen  String
-  TrangThai     Int?
+  TenNhomQuyen  String   
+  TrangThai     Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -50,7 +55,7 @@ model NhomQuyen {
 model DanhMucChucNang {
   MaChucNang    String   @id
   TenChucNang   String
-  TrangThai     Int?
+  TrangThai     Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -61,7 +66,7 @@ model ChiTietQuyen {
   MaNhomQuyen   String
   MaChucNang    String
   HanhDong      String
-  TrangThai     Int?
+  TrangThai     Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -75,7 +80,7 @@ model LoaiSan {
   MaLoaiSan     String   @id
   TenLoaiSan    String
   MoTa          String?
-  TrangThai     Int?
+  TrangThai     Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -87,7 +92,7 @@ model San {
   MaLoaiSan     String
   TenSan        String
   MoTa          String?
-  TrangThai     Int?
+  TrangThai     Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -101,7 +106,7 @@ model KhungGio {
   GioBatDau     String
   GioKetThuc    String
   MoTa          String?
-  TrangThai     Int?
+  TrangThai     Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -115,7 +120,7 @@ model GiaThue {
   ThuTrongTuan  String
   GiaTien       Float
   MoTa          String?
-  TrangThai     Int?
+  TrangThai     Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -125,14 +130,15 @@ model GiaThue {
 
 model KhachHang {
   MaKhachHang   String   @id
-  Email         String?
-  HoTen         String?
-  SoDienThoai   String?
-  CCCD          String?
+  Email         String   @unique
+  HoTen         String     
+  SoDienThoai   String   @unique
+  CCCD          String   @unique
   DiaChi        String?
-  GioiTinh      String?
+  GioiTinh      Int?
   NgaySinh      DateTime?
-  TrangThai     Int?
+  GhiChu        String?
+  TrangThai     Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -147,8 +153,10 @@ model DatSan {
   Checkin       DateTime
   CheckOut      DateTime
   GiaSan        Float
-  NgaySinh      DateTime?
-  TrangThai     Int?
+  TongTien      Float?
+  ThanhToan      String?
+  GhiChu      String?
+  TrangThai     Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -161,7 +169,7 @@ model LoaiSanPham {
   MaLoaiSanPham String   @id
   TenLoaiSanPham String
   MoTa           String?
-  TrangThai      Int?
+  TrangThai      Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -172,9 +180,11 @@ model SanPham {
   MaSanPham     String   @id
   MaLoaiSanPham String
   TenSanPham    String
-  DonViTinh     String?
+  GiaSanPham    Float
+  DonViTinh     String
+  MoTa          String?
   HinhAnh       String?
-  TrangThai     Int?
+  TrangThai     Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -189,7 +199,7 @@ model ChiTietDatSan {
   GiaBan        Float
   SoLuong       Int
   MoTa          String?
-  TrangThai     Int?
+  TrangThai     Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 

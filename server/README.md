@@ -1,9 +1,13 @@
-https://www.prisma.io/
-https://pris.ly/d/getting-
+Prisma: https://www.prisma.io/
+https://pris.ly
+
+Lấy chuỗi secretkey: https://djecrety.ir
+https://randomkeygen.com/
 
 FRONTEND_URL = http://localhost:5173
 SERVER_URL = http://localhost:
 DATABASE_URL="mysql://root:123456@localhost:3306/badminton_server_management_system"
+JWT_SECRET = m+zej4xsf9@&5^93=ivo4v!gzu2-pjn&g%l$+gp-yl%$fxizlb
 
 B1: npm install @prisma/client mysql2
 B2: npm install -D prisma

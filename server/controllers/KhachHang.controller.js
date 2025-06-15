@@ -1,5 +1,11 @@
 const khachHangService = require("../services/KhachHang.service");
 const successHandler = require("../utils/successHandler");
+const {
+  isValidEmail,
+  isValidPhone,
+  isValidCCCD,
+  isValidBirthday,
+} = require("../utils/ValidateInput");
 
 const getAllUsers = async (req, res, next) => {
   try {
@@ -31,9 +37,32 @@ const addUser = async (req, res, next) => {
     DiaChi,
     GioiTinh,
     NgaySinh,
+    GhiChu,
     TrangThai,
   } = req.body;
   try {
+    const errorMsg = validateInputCreate(req.body);
+    if (errorMsg) {
+      return res.status(400).json({
+        ERROR: true,
+        SUCCESS: false,
+        MESSAGE: errorMsg,
+      });
+    }
+
+    const duplicateError = await checkDuplicateFields({
+      Email,
+      SoDienThoai,
+      CCCD,
+    });
+    if (duplicateError) {
+      return res.status(409).json({
+        ERROR: true,
+        SUCCESS: false,
+        MESSAGE: duplicateError,
+      });
+    }
+
     const result = await khachHangService.createUser({
       Email,
       HoTen,
@@ -42,6 +71,7 @@ const addUser = async (req, res, next) => {
       DiaChi,
       GioiTinh,
       NgaySinh,
+      GhiChu,
       TrangThai,
     });
     successHandler(res, "THÊM MỚI KHÁCH HÀNG THÀNH CÔNG!", result, 201);
@@ -59,6 +89,7 @@ const updateUsers = async (req, res, next) => {
     DiaChi,
     GioiTinh,
     NgaySinh,
+    GhiChu,
     TrangThai,
   } = req.body;
 
@@ -71,6 +102,7 @@ const updateUsers = async (req, res, next) => {
       DiaChi,
       GioiTinh,
       NgaySinh,
+      GhiChu,
       TrangThai,
     });
 
@@ -89,6 +121,37 @@ const deleteUsers = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+const validateInputCreate = (data) => {
+  const { Email, NgaySinh, SoDienThoai, CCCD } = data;
+
+  if ([Email, SoDienThoai, CCCD].some((v) => !v || v.trim() === ""))
+    return "Vui lòng nhập đầy đủ các trường bắt buộc.";
+
+  if (!isValidEmail(Email)) return "Email không hợp lệ.";
+
+  if (!isValidPhone(SoDienThoai)) return "Số điện thoại không hợp lệ.";
+
+  if (!isValidCCCD(CCCD)) return "CCCD phải có đúng 12 chữ số.";
+
+  if (NgaySinh && !isValidBirthday(NgaySinh))
+    return "Ngày sinh không được lớn hơn ngày hiện tại.";
+
+  return null;
+};
+
+const checkDuplicateFields = async ({ Email, SoDienThoai, CCCD }) => {
+  const existedEmail = await khachHangService.findByEmail(Email);
+  if (existedEmail) return "Email đã tồn tại.";
+
+  const existedPhone = await khachHangService.findByPhone(SoDienThoai);
+  if (existedPhone) return "Số điện thoại đã tồn tại.";
+
+  const existedCCCD = await khachHangService.findByCCCD(CCCD);
+  if (existedCCCD) return "CCCD đã tồn tại.";
+
+  return null;
 };
 
 module.exports = {
