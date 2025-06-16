@@ -2,7 +2,11 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const getAllDanhMucChucNang = async () => {
-  return await prisma.danhMucChucNang.findMany();
+  return await prisma.danhMucChucNang.findMany({
+    include: {
+      ChiTietQuyen: true,
+    },
+  });
 };
 
 const getDanhMucChucNangById = async (id) => {
@@ -33,6 +37,12 @@ const deleteDanhMucChucNang = async (id) => {
     where: { MaChucNang: id },
   });
 };
+const deleteDanhMucChucNangXoa = async (id) => {
+  return await prisma.danhMucChucNang.update({
+    where: { MaChucNang: id },
+    data: { TrangThai: -1 },
+  });
+};
 
 const generateNewId = async () => {
   const last = await prisma.danhMucChucNang.findFirst({
@@ -56,4 +66,5 @@ module.exports = {
   createDanhMucChucNang,
   updateDanhMucChucNang,
   deleteDanhMucChucNang,
+  deleteDanhMucChucNangXoa,
 };

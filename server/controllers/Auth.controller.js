@@ -13,7 +13,11 @@ const {
 const {
   generateAccessToken,
   generateRefreshToken,
+  generateResetToken,
 } = require("../utils/generateToken");
+const generateOTP = require("../utils/genarateOTP");
+const sendEmail = require("../config/sendEmail");
+const forgotPasswordTemplate = require("../utils/forgotPasswordTemplate");
 
 const registerUser = async (req, res, next) => {
   const {
@@ -197,7 +201,104 @@ const getDetailUser = async (req, res, next) => {
   }
 };
 
+const forgotPassword = async (req, res, next) => {
+  const { txtEmail } = req?.body;
+
+  if (!txtEmail)
+    return errorHandler(res, "Vui lòng nhập đầy đủ thông tin!", 400);
+  try {
+    const checkUser = await NguoiDungService.findByEmail(txtEmail);
+    if (!checkUser) return errorHandler(res, "Email không tồn tại!", 404);
+
+    const otp = generateOTP();
+    const expireTime = new Date(Date.now() + 3 * 60 * 1000);
+
+    await TaiKhoanService.updateSendEmailOTP(checkUser?.MaNguoiDung, {
+      ForgotPasswordOtp: otp,
+      ForgotPasswordExpiry: new Date(expireTime).toISOString(),
+    });
+
+    await sendEmail({
+      sendTo: checkUser?.Email,
+      subject: "Forgot password from PHPMol",
+      html: forgotPasswordTemplate({
+        name: checkUser?.HoTen,
+        otp: otp,
+      }),
+    });
+
+    return successHandler(res, "Vui lòng kiểm tra email của bạn!");
+  } catch (error) {
+    next(error);
+  }
+};
+
+const verifyForgotPasswordOtp = async (req, res, next) => {
+  const { txtEmail, txtOtp } = req?.body;
+
+  if (!txtEmail || txtOtp === undefined || txtOtp === null)
+    return errorHandler(res, "Vui lòng điền đầy đủ thông tin!", 400);
+  try {
+    const checkUser = await NguoiDungService.findByEmail(txtEmail);
+    if (!checkUser) return errorHandler(res, "Email không tồn tại!", 404);
+
+    const checkTaiKhoan = await TaiKhoanService.getTaiKhoanById(
+      checkUser?.MaNguoiDung
+    );
+    if (!checkTaiKhoan)
+      return errorHandler(res, "Tài khoản không tồn tại!", 404);
+
+    if (txtOtp !== checkTaiKhoan?.ForgotPasswordOtp)
+      return errorHandler(res, "Mã OTP không đúng!");
+
+    const currentTime = new Date();
+    const expiryTime = new Date(checkTaiKhoan?.ForgotPasswordExpiry);
+    if (currentTime > expiryTime) return errorHandler(res, "OTP đã hết han!");
+
+    await TaiKhoanService.updateSendEmailOTP(checkTaiKhoan?.MaNhanVien, {
+      ForgotPasswordOtp: "",
+      ForgotPasswordExpiry: "",
+    });
+    const payload = {
+      ID: checkTaiKhoan.MaNhanVien,
+      ROLE: checkTaiKhoan.MaNhomQuyen,
+      USERNAME: checkTaiKhoan.NguoiDung.HoTen,
+    };
+
+    const resetToken = generateResetToken(payload);
+
+    return successHandler(res, "Xác thực OTP thành công.", {
+      resetToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const resetPassword = async (req, res, next) => {
+  const { txtPassword, txtEmail, txtConfirmPassword } = req?.body;
+  try {
+    if (!txtEmail || !txtPassword || !txtConfirmPassword)
+      return errorHandler(res, "Thiếu thông tin.");
+
+    if (txtPassword !== txtConfirmPassword)
+      return errorHandler(res, "Mật khẩu và nhập lại phải giống nhau.");
+
+    const checkUser = await NguoiDungService.findByEmail(txtEmail);
+    if (!checkUser) return errorHandler(res, "Email không tồn tại!");
+
+    const hashMatKhau = await hashPassword(txtPassword);
+
+    await TaiKhoanService.updatePassword(checkUser?.MaNguoiDung, hashMatKhau);
+
+    return successHandler(res, "Cập nhật mật khẩu thành công.");
+  } catch (error) {
+    next(error);
+  }
+};
+
 const validateInputRegister = (data) => {
+  console.log("DATA: ", data);
   const {
     Email,
     SoDienThoai,
@@ -265,4 +366,7 @@ module.exports = {
   loginUser,
   logoutUser,
   getDetailUser,
+  forgotPassword,
+  verifyForgotPasswordOtp,
+  resetPassword,
 };

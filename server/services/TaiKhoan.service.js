@@ -90,6 +90,21 @@ const findByLoginValue = async ({ type, value }) => {
   }
 };
 
+const updateSendEmailOTP = async (ID, data) => {
+  return await prisma.taiKhoan.update({
+    where: {
+      MaNhanVien: ID,
+    },
+    data: {
+      ForgotPasswordOtp: data?.ForgotPasswordOtp
+        ? String(data?.ForgotPasswordOtp)
+        : null,
+      ForgotPasswordExpiry: data?.ForgotPasswordExpiry
+        ? data?.ForgotPasswordExpiry
+        : null,
+    },
+  });
+};
 const updateRefreshToken = async (ID, refreshToken) => {
   return await prisma.taiKhoan.update({
     where: {
@@ -97,6 +112,16 @@ const updateRefreshToken = async (ID, refreshToken) => {
     },
     data: {
       RefreshToken: refreshToken || null,
+    },
+  });
+};
+const updatePassword = async (ID, password) => {
+  return await prisma.taiKhoan.update({
+    where: {
+      MaNhanVien: ID,
+    },
+    data: {
+      MatKhau: password || null,
     },
   });
 };
@@ -110,4 +135,6 @@ module.exports = {
   findByUsername,
   findByLoginValue,
   updateRefreshToken,
+  updateSendEmailOTP,
+  updatePassword,
 };

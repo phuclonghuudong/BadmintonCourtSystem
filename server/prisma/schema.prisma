@@ -10,7 +10,7 @@ datasource db {
 model NguoiDung {
   MaNguoiDung String   @id
   Email       String   @unique
-  HoTen       String   @unique  
+  HoTen       String     
   SoDienThoai String   @unique
   CCCD        String   @unique
   DiaChi      String?
@@ -32,7 +32,7 @@ model TaiKhoan {
   VerifyEmail    Boolean?  
   ForgotPasswordOtp     String?
   ForgotPasswordExpiry  DateTime?
-  RefreshToken         String @db.VarChar(500)
+  RefreshToken         String? @db.Text
   TrangThai      Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
