@@ -14,6 +14,7 @@ const getChucNangById = async (req, res, next) => {
   const { MaChucNang } = req.params;
   try {
     const result = await DMCNService.getDanhMucChucNangById(MaChucNang);
+    if (!result) return errorHandler(res, "KHÔNG TÌM THẤY DANH MỤC!", 403);
     successHandler(res, "CHỨC NĂNG THEO ID", result);
   } catch (error) {
     next(error);
@@ -21,11 +22,15 @@ const getChucNangById = async (req, res, next) => {
 };
 
 const createChucNang = async (req, res, next) => {
-  const { TenChucNang } = req.body;
+  const { TenChucNang, TrangThai } = req.body;
 
   if (!TenChucNang) return errorHandler(res, "Vui lòng nhập đầy đủ thông tin.");
   try {
-    const result = await DMCNService.createDanhMucChucNang({ TenChucNang });
+    const result = await DMCNService.createDanhMucChucNang({
+      TenChucNang,
+      TrangThai,
+    });
+
     successHandler(res, "THÊM MỚI DANH MỤC THÀNH CÔNG!", result, 201);
   } catch (error) {
     next(error);
@@ -37,6 +42,9 @@ const updateChucNang = async (req, res, next) => {
 
   if (!TenChucNang) return errorHandler(res, "Vui lòng nhập đầy đủ thông tin.");
   try {
+    const findId = await DMCNService.findDanhMucChucNangById(MaChucNang);
+    if (!findId) return errorHandler(res, "KHÔNG TÌM THẤY DANH MỤC!", 403);
+
     const result = await DMCNService.updateDanhMucChucNang(MaChucNang, {
       TenChucNang,
       TrangThai,
@@ -50,6 +58,9 @@ const deleteChucNang = async (req, res, next) => {
   const { MaChucNang } = req.params;
 
   try {
+    const findId = await DMCNService.findDanhMucChucNangById(MaChucNang);
+    if (!findId) return errorHandler(res, "KHÔNG TÌM THẤY DANH MỤC!", 403);
+
     const result = await DMCNService.deleteDanhMucChucNangXoa(MaChucNang);
     successHandler(res, "XÓA DANH MỤC THÀNH CÔNG!", result, 201);
   } catch (error) {

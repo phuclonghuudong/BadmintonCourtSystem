@@ -44,6 +44,12 @@ const deleteDanhMucChucNangXoa = async (id) => {
   });
 };
 
+const findDanhMucChucNangById = async (id) => {
+  return await prisma.danhMucChucNang.findUnique({
+    where: { MaChucNang: id },
+  });
+};
+
 const generateNewId = async () => {
   const last = await prisma.danhMucChucNang.findFirst({
     orderBy: {
@@ -67,4 +73,5 @@ module.exports = {
   updateDanhMucChucNang,
   deleteDanhMucChucNang,
   deleteDanhMucChucNangXoa,
+  findDanhMucChucNangById,
 };

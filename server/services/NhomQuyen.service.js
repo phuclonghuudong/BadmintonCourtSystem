@@ -60,6 +60,12 @@ const deleteNhomQuyenXoa = async (id) => {
   });
 };
 
+const findById = async (id) => {
+  return await prisma.nhomQuyen.findUnique({
+    where: { MaNhomQuyen: id },
+  });
+};
+
 module.exports = {
   getAllNhomQuyen,
   getNhomQuyenById,
@@ -67,4 +73,5 @@ module.exports = {
   updateNhomQuyen,
   deleteNhomQuyenXoa,
   deleteNhomQuyen,
+  findById,
 };

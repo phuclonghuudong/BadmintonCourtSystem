@@ -1,5 +1,6 @@
 const LoaiSanPhamService = require("../services/LoaiSanPham.service");
 const successHandler = require("../utils/successHandler");
+const errorHandler = require("../utils/errorHandler");
 
 const getAllLoaiSanPham = async (req, res, next) => {
   try {
@@ -16,6 +17,7 @@ const getLoaiSanPhamById = async (req, res, next) => {
 
   try {
     const result = await LoaiSanPhamService.getLoaiSanPhamById(MaLoaiSanPham);
+    if (!result) return errorHandler(res, "KHÔNG TÌM THẤY LOẠI SẢN PHẨM", 403);
 
     successHandler(res, "THÔNG TIN LOẠI SẢN PHẨM!", result);
   } catch (error) {
@@ -31,7 +33,6 @@ const addLoaiSanPham = async (req, res, next) => {
       MoTa,
       TrangThai,
     });
-
     successHandler(res, "THÊM MỚI LOẠI SẢN PHẨM THÀNH CÔNG!", result, 201);
   } catch (error) {
     next(error);
@@ -43,12 +44,14 @@ const updateLoaiSanPham = async (req, res, next) => {
   const { TenLoaiSanPham, MoTa, TrangThai } = req.body;
 
   try {
+    const findId = await LoaiSanPhamService.findLoaiSanPhamById(MaLoaiSanPham);
+    if (!findId) return errorHandler(res, "KHÔNG TÌM THẤY LOẠI SẢN PHẨM", 403);
+
     const result = await LoaiSanPhamService.updateLoaiSanPham(MaLoaiSanPham, {
       TenLoaiSanPham,
       MoTa,
       TrangThai,
     });
-
     successHandler(res, "CẬP NHẬT LOẠI SẢN PHẨM THÀNH CÔNG!", result);
   } catch (error) {
     next(error);
@@ -59,8 +62,10 @@ const deleteLoaiSanPham = async (req, res, next) => {
   const { MaLoaiSanPham } = req.params;
 
   try {
-    const result = await LoaiSanPhamService.deleteLoaiSanPhamXoa(MaLoaiSanPham);
+    const findId = await LoaiSanPhamService.findLoaiSanPhamById(MaLoaiSanPham);
+    if (!findId) return errorHandler(res, "KHÔNG TÌM THẤY LOẠI SẢN PHẨM", 403);
 
+    const result = await LoaiSanPhamService.deleteLoaiSanPhamXoa(MaLoaiSanPham);
     successHandler(res, "XÓA LOẠI SẢN PHẨM THÀNH CÔNG!", result);
   } catch (error) {
     next(error);

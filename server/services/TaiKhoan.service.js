@@ -47,6 +47,16 @@ const deleteTaiKhoan = async (id) => {
   });
 };
 
+const findTaiKhoanById = async (id) => {
+  return await prisma.taiKhoan.findUnique({
+    where: { MaNhanVien: id },
+    include: {
+      NguoiDung: true,
+      NhomQuyen: true,
+    },
+  });
+};
+
 const findByUsername = async (username) => {
   return await prisma.taiKhoan.findUnique({ where: { TenDangNhap: username } });
 };
@@ -132,6 +142,7 @@ module.exports = {
   updateTaiKhoan,
   deleteTaiKhoan,
   getTaiKhoanById,
+  findTaiKhoanById,
   findByUsername,
   findByLoginValue,
   updateRefreshToken,

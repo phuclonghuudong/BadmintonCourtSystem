@@ -186,6 +186,7 @@ const getDetailUser = async (req, res, next) => {
     }
 
     const result = await TaiKhoanService.getTaiKhoanById(userID);
+    if (!result) return errorHandler(res, "KHÔNG TÌM THẤY TÀI KHOẢN", 403);
 
     const {
       MatKhau,
@@ -298,7 +299,6 @@ const resetPassword = async (req, res, next) => {
 };
 
 const validateInputRegister = (data) => {
-  console.log("DATA: ", data);
   const {
     Email,
     SoDienThoai,

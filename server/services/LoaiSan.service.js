@@ -10,6 +10,11 @@ const getLoaiSanById = async (id) => {
     where: { MaLoaiSan: id },
   });
 };
+const findLoaiSanById = async (id) => {
+  return await prisma.loaiSan.findUnique({
+    where: { MaLoaiSan: id },
+  });
+};
 
 const createLoaiSan = async (data) => {
   const newID = await generateNewId();
@@ -62,4 +67,5 @@ module.exports = {
   updateLoaiSan,
   deleteLoaiSanXoa,
   deleteLoaiSan,
+  findLoaiSanById,
 };

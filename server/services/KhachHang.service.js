@@ -55,6 +55,12 @@ const generateNewId = async () => {
   return `KH${newNumber}`;
 };
 
+const findUserById = async (id) => {
+  return await prisma.khachHang.findUnique({
+    where: { MaKhachHang: id },
+  });
+};
+
 const findByEmail = async (email) => {
   return await prisma.khachHang.findUnique({ where: { Email: email } });
 };
@@ -77,4 +83,5 @@ module.exports = {
   findByEmail,
   findByPhone,
   findByCCCD,
+  findUserById,
 };

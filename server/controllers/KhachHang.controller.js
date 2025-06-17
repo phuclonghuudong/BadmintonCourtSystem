@@ -1,5 +1,6 @@
 const khachHangService = require("../services/KhachHang.service");
 const successHandler = require("../utils/successHandler");
+const errorHandler = require("../utils/errorHandler");
 const {
   isValidEmail,
   isValidPhone,
@@ -21,6 +22,7 @@ const getUserById = async (req, res, next) => {
 
   try {
     const result = await khachHangService.getUserById(MaKhachHang);
+    if (!result) return errorHandler(res, "KHÔNG TÌM THẤY KHÁCH HÀNG!", 403);
 
     successHandler(res, "THÔNG TIN KHÁCH HÀNG!", result);
   } catch (error) {
@@ -94,6 +96,9 @@ const updateUsers = async (req, res, next) => {
   } = req.body;
 
   try {
+    const findId = await khachHangService.findUserById(MaKhachHang);
+    if (!findId) return errorHandler(res, "KHÔNG TÌM THẤY KHÁCH HÀNG!", 403);
+
     const result = await khachHangService.updateUser(MaKhachHang, {
       Email,
       HoTen,
@@ -105,7 +110,6 @@ const updateUsers = async (req, res, next) => {
       GhiChu,
       TrangThai,
     });
-
     successHandler(res, "CẬP NHẬT KHÁCH HÀNG THÀNH CÔNG!", result);
   } catch (error) {
     next(error);
@@ -115,8 +119,10 @@ const deleteUsers = async (req, res, next) => {
   const { MaKhachHang } = req.params;
 
   try {
-    const result = await khachHangService.deleteUserXoa(MaKhachHang);
+    const findId = await khachHangService.findUserById(MaKhachHang);
+    if (!findId) return errorHandler(res, "KHÔNG TÌM THẤY KHÁCH HÀNG!", 403);
 
+    const result = await khachHangService.deleteUserXoa(MaKhachHang);
     successHandler(res, "XÓA KHÁCH HÀNG THÀNH CÔNG!", result);
   } catch (error) {
     next(error);

@@ -1,5 +1,6 @@
 const NhomQuyenService = require("../services/NhomQuyen.service");
 const successHandler = require("../utils/successHandler");
+const errorHandler = require("../utils/errorHandler");
 
 const getAllNhomQuyen = async (req, res, next) => {
   try {
@@ -41,6 +42,9 @@ const updateNhomQuyen = async (req, res, next) => {
   const { TenNhomQuyen, TrangThai } = req.body;
 
   try {
+    const findId = await NhomQuyenService.findById(MaNhomQuyen);
+    if (!findId) return errorHandler(res, "KHÔNG TÌM THẤY NHÓM QUYỀN", 403);
+
     const result = await NhomQuyenService.updateNhomQuyen(MaNhomQuyen, {
       TenNhomQuyen,
       TrangThai,
@@ -55,8 +59,10 @@ const deleteNhomQuyen = async (req, res, next) => {
   const { MaNhomQuyen } = req.params;
 
   try {
-    const result = await NhomQuyenService.deleteNhomQuyenXoa(MaNhomQuyen);
+    const findId = await NhomQuyenService.findById(MaNhomQuyen);
+    if (!findId) return errorHandler(res, "KHÔNG TÌM THẤY NHÓM QUYỀN", 403);
 
+    const result = await NhomQuyenService.deleteNhomQuyenXoa(MaNhomQuyen);
     successHandler(res, "XÓA NHÓM QUYỀN THÀNH CÔNG!", result);
   } catch (error) {
     next(error);
