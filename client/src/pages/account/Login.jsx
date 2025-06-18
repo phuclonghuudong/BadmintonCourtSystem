@@ -1,13 +1,68 @@
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import AccountApi from "../../apis/Account.api";
 import Button from "../../components/ui/Button";
 import FormInput from "../../components/ui/FormInput";
+import LoadingAlert from "../../components/ui/LoadingAlert";
 import Text from "../../components/ui/Text";
+import apiService from "../../services/apiService";
+import { setAccountDetails } from "../../store/AccountSlice";
+import fetchAccountDetail from "../../utils/fetchAccountDetail";
 
 const Login = () => {
-  const navigate = useNavigate();
   const fontSize = "text-sm sm:text-md md:text-lg";
-  const handleLogin = () => {
-    navigate("/");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [data, setData] = useState({
+    Username: "",
+    Password: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const validateValue = Object.values(data).every((el) => el);
+
+  const handleOnchange = (event) => {
+    const { name, value } = event.target;
+
+    setData((pre) => {
+      return {
+        ...pre,
+        [name]: value,
+      };
+    });
+  };
+  const handleLogin = async () => {
+    if (!validateValue) {
+      alert("Vui lòng nhập đủ thông tin.");
+      return;
+    }
+    try {
+      setLoading(true);
+      const response = await apiService(AccountApi.loginAccount, {
+        data: {
+          Username: data.Username,
+          Password: data.Password,
+        },
+      });
+      const { data: responseData } = response;
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      if (responseData?.SUCCESS) {
+        toast.success(responseData?.MESSAGE);
+        localStorage.setItem("accessToken", responseData?.DATA?.ACCESS_TOKEN);
+        const userDetails = await fetchAccountDetail();
+        dispatch(setAccountDetails(userDetails?.DATA));
+
+        navigate("/");
+      } else {
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Đăng nhập thất bại. Vui lòng kiểm tra tài khoản/mật khẩu.");
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <section className="flex justify-center items-center min-h-screen px-4 backgroundImageAccount">
@@ -24,29 +79,37 @@ const Login = () => {
         <div className="gap-3 px-5">
           <FormInput
             title={"Tên đăng nhập:"}
-            name={"txtUsername"}
+            name={"Username"}
             uppercase
             bold
             size={fontSize}
+            value={data?.Username}
+            onChange={handleOnchange}
           />
           <FormInput
             title={"Mật khẩu:"}
-            name={"txtPassword"}
+            name={"Password"}
             type={"password"}
             uppercase
             bold
             size={fontSize}
+            value={data?.Password}
+            onChange={handleOnchange}
           />
           <div className="pt-6 px-2">
-            <Button
-              title="Đăng nhập"
-              bold
-              uppercase
-              backgroundColor={"bg-green-600"}
-              size={fontSize}
-              color="text-white"
-              onClick={handleLogin}
-            />
+            {loading ? (
+              <LoadingAlert size="w-12 h-12" />
+            ) : (
+              <Button
+                title="Đăng nhập"
+                bold
+                uppercase
+                backgroundColor={"bg-green-600"}
+                size={fontSize}
+                color="text-white"
+                onClick={handleLogin}
+              />
+            )}
           </div>
           <div className="p-4 justify-end items-end flex gap-4">
             <Text title="Bạn chưa có tài khoản?" bold size="text-sm" />

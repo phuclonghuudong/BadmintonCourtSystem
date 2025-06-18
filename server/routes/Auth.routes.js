@@ -16,6 +16,12 @@ const routes = [
   { method: "post", path: "/login", handler: authController.loginUser },
   {
     method: "post",
+    path: "/refresh-token",
+    middlewares: useAuthRoute("refresh", ["ADMIN", "NHANVIEN"]),
+    handler: authController.refreshTokenController,
+  },
+  {
+    method: "post",
     path: "/logout",
     middlewares: useAuthRoute("access", ["ADMIN", "NHANVIEN"]),
     handler: authController.logoutUser,
@@ -23,7 +29,7 @@ const routes = [
   {
     method: "get",
     path: "/details",
-    middlewares: useAuthRoute("refresh", ["ADMIN", "NHANVIEN"]),
+    middlewares: useAuthRoute("access", ["ADMIN", "NHANVIEN"]),
     handler: authController.getDetailUser,
   },
   {

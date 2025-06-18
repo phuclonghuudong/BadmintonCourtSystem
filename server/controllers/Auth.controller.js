@@ -360,6 +360,49 @@ const checkDuplicateFields = async ({
 
   return null;
 };
+const refreshTokenController = async ({ res, req, next }) => {
+  try {
+    const token = req.cookies?.refreshToken;
+    if (!token) return errorHandler(res, "Không có refresh token!", 401);
+
+    const decoded = jwt.verify(token, process.env.SECRET_KEY_REFRESH_TOKEN);
+    const userId = decoded?.ID;
+
+    if (!userId) return errorHandler(res, "Token không hợp lệ!", 403);
+
+    const user = await TaiKhoanService.getTaiKhoanById(userId);
+    if (!user || user?.RefreshToken !== token) {
+      return errorHandler(res, "Refresh token không đúng!", 403);
+    }
+
+    const payload = {
+      ID: user.MaNhanVien,
+      ROLE: user.MaNhomQuyen,
+      USERNAME: user.NguoiDung?.HoTen,
+    };
+
+    const newAccessToken = await generateAccessToken(payload);
+    const newRefreshToken = await generateRefreshToken(payload);
+
+    await TaiKhoanService.updateRefreshToken(userId, newRefreshToken);
+
+    const cookiesOption = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+    };
+
+    res.cookie("accessToken", newAccessToken, cookiesOption);
+    res.cookie("refreshToken", newRefreshToken, cookiesOption);
+
+    return successHandler(res, "Làm mới token thành công!", {
+      ACCESS_TOKEN: newAccessToken,
+      // REFRESH_TOKEN: newRefreshToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 module.exports = {
   registerUser,
@@ -369,4 +412,5 @@ module.exports = {
   forgotPassword,
   verifyForgotPasswordOtp,
   resetPassword,
+  refreshTokenController,
 };

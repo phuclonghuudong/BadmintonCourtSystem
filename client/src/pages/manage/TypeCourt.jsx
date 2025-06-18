@@ -1,14 +1,32 @@
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import LoaiSanApi from "../../apis/LoaiSan.api";
 import ButtonIcon from "../../components/ui/ButtonIcon";
 import TableCustom from "../../components/ui/TableCustom";
 import Text from "../../components/ui/Text";
+import apiService from "../../services/apiService";
 
 const TypeCourt = () => {
   const headers = ["Mã loại", "Tên loại sân"];
-  const data = [
-    ["L1", "ADMIN"],
-    ["L2", "Nguyễn Văn A"],
-    ["L3", "b"],
-  ];
+
+  const [data, setData] = useState([]);
+
+  const fetchAllLoaiSan = async () => {
+    try {
+      const response = await apiService(LoaiSanApi.getAllLoaiSan);
+      if (response?.ERROR) {
+        toast.error(response?.MESSAGE);
+      }
+      if (response?.SUCCESS) {
+        setData(response?.DATA);
+      }
+    } catch (error) {
+      console.error("Error fetching all LoaiSan:", error);
+    }
+  };
+  useEffect(() => {
+    fetchAllLoaiSan();
+  }, []);
   return (
     <div className="p-2 w-full h-full flex gap-2">
       <div className="w-8/12  flex flex-col gap-2">

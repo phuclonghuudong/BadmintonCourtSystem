@@ -12,6 +12,10 @@ const AccountApi = {
     url: "/account/logout",
     method: "post",
   },
+  refreshTokenAccount: {
+    url: "/account/refresh-token",
+    method: "post",
+  },
   detailsAccount: {
     url: "/account/details",
     method: "get",

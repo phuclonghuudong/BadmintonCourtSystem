@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import ICON from "../../assets/iconUser.png";
 import { getRouteList } from "../../general/RoutePaths";
@@ -8,6 +9,8 @@ import IconInfo from "../ui/IconInfo";
 import TitleInfo from "../ui/TitleInfo";
 
 const MenuTaskbar = () => {
+  const account = useSelector((state) => state.userAccount.account);
+
   const routeList = getRouteList();
   const navigate = useNavigate();
   const location = useLocation();
@@ -28,9 +31,21 @@ const MenuTaskbar = () => {
           <IconInfo icon={ICON} />
         </div>
         <div className="w-4/6 p-2 flex flex-col justify-between">
-          <TitleInfo title={"Admin"} color="red" size={"text-sm"} />
           <TitleInfo
-            title={"Quản trị hệ thống"}
+            title={
+              account && account?.MaNhanVien !== null
+                ? account?.NguoiDung?.HoTen
+                : "Chưa có thông tin"
+            }
+            color="red"
+            size={"text-sm"}
+          />
+          <TitleInfo
+            title={
+              account && account?.MaNhanVien !== null
+                ? account?.NhomQuyen?.TenNhomQuyen
+                : "Chưa có thông tin"
+            }
             bold
             color="text-red-800"
             size={"text-sm"}

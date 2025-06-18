@@ -7,6 +7,7 @@ const FormInput = ({
   uppercase,
   bold,
   onChange,
+  value,
 }) => {
   let txtTitle = title ? title : "";
   let txtName = name ? name : "noneName";
@@ -15,6 +16,7 @@ const FormInput = ({
   let txtColor = color ? color : "";
   let txtUppercase = uppercase ? "uppercase" : "";
   let txtBold = bold ? "font-bold" : "";
+  let txtValue = value ? value : "";
 
   return (
     <div className={`flex flex-col items-start gap-2 p-2 ${txtSize}`}>
@@ -29,6 +31,7 @@ const FormInput = ({
         id={txtName}
         name={txtName}
         onChange={onChange}
+        value={txtValue}
         className="bg-blue-50 p-2 w-full rounded-sm border-none focus:outline-none "
       />
     </div>
