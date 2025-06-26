@@ -1,39 +1,26 @@
-const Button = ({
-  title,
-  bold,
-  uppercase,
-  backgroundColor,
-  color,
-  size,
-  name,
-  onClick,
-}) => {
-  let btnTitle = title ? title : "NO NAME";
-  let btnBold = bold ? "font-bold" : "";
-  let btnUppercase = uppercase ? "uppercase" : "";
-  let btnBackgroundColor = backgroundColor ? backgroundColor : "";
-  let btnColor = color ? color : "";
-  let btnSize = size ? size : "";
-  let btnName = name ? name : "btnNoName";
-
-  const shiftTailwindColor = (className, shift = 200) => {
-    const match = className.match(/(.*-)(\d{2,3})$/);
-    if (!match) return className;
-    const prefix = match[1];
-    const oldValue = parseInt(match[2]);
-    const newValue = Math.min(900, Math.max(50, oldValue + shift));
-    return `${prefix}${newValue}`;
+const Button = ({ title, icon: ICON, color = "white" }) => {
+  const fontSize = "text-[10px] font-semibold";
+  const colorClasses = {
+    white: "bg-white hover:bg-gray-300 text-black",
+    orange: "bg-orange-500 hover:bg-orange-700 text-white",
+    blue: "bg-blue-500 hover:bg-blue-700 text-white",
+    green: "bg-green-500 hover:bg-green-700 text-white",
+    red: "bg-red-500 hover:bg-red-700 text-white",
+    gray: "bg-gray-200 hover:bg-gray-300 text-black",
   };
-  const hoverBackgroundColor = shiftTailwindColor(btnBackgroundColor, 200);
+  const buttonColor = colorClasses[color];
 
   return (
-    <button
-      className={`w-full rounded-sm cursor-pointer p-3 ${btnBold} ${btnUppercase} ${btnSize} ${btnColor} ${btnBackgroundColor} hover:${hoverBackgroundColor}`}
-      name={btnName}
-      onClick={onClick}
-    >
-      {btnTitle}
-    </button>
+    <div className="w-full h-full py-1 ">
+      <button
+        className={`${fontSize} ${buttonColor} w-full h-8 rounded-sm cursor-pointer `}
+      >
+        <div className="flex justify-center items-center h-full w-full gap-2">
+          {ICON || ""}
+          {title ? title : ""}
+        </div>
+      </button>
+    </div>
   );
 };
 

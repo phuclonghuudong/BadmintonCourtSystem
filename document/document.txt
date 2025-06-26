@@ -16,3 +16,4 @@
 4. Danh mục chức năng: MaChucNang (PK), Tên chức năng, Trạng thái
 
 5. Chi tiết quyền: MaNhomQuyen (FK), MaChucNang (FK), Hành động (Xem, Sửa, Xóa, Thêm...), Trạng thái
+

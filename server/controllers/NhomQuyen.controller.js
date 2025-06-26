@@ -1,69 +1,34 @@
 const NhomQuyenService = require("../services/NhomQuyen.service");
-const successHandler = require("../utils/successHandler");
-const errorHandler = require("../utils/errorHandler");
+const { BAD_REQUEST } = require("../constants/responseStatus");
+const successHandler = require("../utils/succeesHandler");
 
 const getAllNhomQuyen = async (req, res, next) => {
   try {
     const result = await NhomQuyenService.getAllNhomQuyen();
 
-    successHandler(res, "DANH SÁCH TẤT CẢ NHÓM QUYỀN", result);
+    successHandler(res, "DANH SÁCH TẤT CẢ NHÓM QUYỀN", result, "SUCCESS");
   } catch (error) {
     next(error);
   }
 };
 
-const getNhomQuyenById = async (req, res, next) => {
-  const { MaNhomQuyen } = req.params;
-
+const createNhomQuyen = async (req, res, next) => {
+  const { TenNhomQuyen, TrangThai, MoTa } = req.body;
   try {
-    const result = await NhomQuyenService.getNhomQuyenById(MaNhomQuyen);
+    if (!TenNhomQuyen || TenNhomQuyen.trim() === "") {
+      return res.status(BAD_REQUEST.status).json({
+        isSuccess: BAD_REQUEST.isSuccess,
+        message: "Tên nhóm quyền không được để trống!",
+      });
+    }
 
-    successHandler(res, "THÔNG TIN CHI TIẾT NHÓM QUYỀN!", result);
-  } catch (error) {
-    next(error);
-  }
-};
-
-const addNhomQuyen = async (req, res, next) => {
-  const { TenNhomQuyen, TrangThai } = req.body;
-  try {
     const result = await NhomQuyenService.createNhomQuyen({
       TenNhomQuyen,
+      MoTa,
       TrangThai,
     });
 
-    successHandler(res, "THÊM MỚI NHÓM QUYỀN THÀNH CÔNG!", result, 201);
-  } catch (error) {
-    next(error);
-  }
-};
-const updateNhomQuyen = async (req, res, next) => {
-  const { MaNhomQuyen } = req.params;
-  const { TenNhomQuyen, TrangThai } = req.body;
-
-  try {
-    const findId = await NhomQuyenService.findById(MaNhomQuyen);
-    if (!findId) return errorHandler(res, "KHÔNG TÌM THẤY NHÓM QUYỀN", 403);
-
-    const result = await NhomQuyenService.updateNhomQuyen(MaNhomQuyen, {
-      TenNhomQuyen,
-      TrangThai,
-    });
-
-    successHandler(res, "CẬP NHẬT NHÓM QUYỀN THÀNH CÔNG!", result);
-  } catch (error) {
-    next(error);
-  }
-};
-const deleteNhomQuyen = async (req, res, next) => {
-  const { MaNhomQuyen } = req.params;
-
-  try {
-    const findId = await NhomQuyenService.findById(MaNhomQuyen);
-    if (!findId) return errorHandler(res, "KHÔNG TÌM THẤY NHÓM QUYỀN", 403);
-
-    const result = await NhomQuyenService.deleteNhomQuyenXoa(MaNhomQuyen);
-    successHandler(res, "XÓA NHÓM QUYỀN THÀNH CÔNG!", result);
+    successHandler(res, "THÊM MỚI NHÓM QUYỀN THÀNH CÔNG!", result, "CREATE");
   } catch (error) {
     next(error);
   }
@@ -71,8 +36,5 @@ const deleteNhomQuyen = async (req, res, next) => {
 
 module.exports = {
   getAllNhomQuyen,
-  getNhomQuyenById,
-  addNhomQuyen,
-  updateNhomQuyen,
-  deleteNhomQuyen,
+  createNhomQuyen,
 };

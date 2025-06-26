@@ -1,39 +1,62 @@
+import { useState } from "react";
+
 const FormInput = ({
   title,
   name,
-  type,
-  size,
-  color,
-  uppercase,
-  bold,
-  onChange,
+  typeInput,
+  autoFocus,
   value,
+  onChange,
+  disabled,
 }) => {
-  let txtTitle = title ? title : "";
-  let txtName = name ? name : "noneName";
-  let txtType = type ? type : "text";
-  let txtSize = size ? size : "";
-  let txtColor = color ? color : "";
-  let txtUppercase = uppercase ? "uppercase" : "";
-  let txtBold = bold ? "font-bold" : "";
-  let txtValue = value ? value : "";
-
+  const [showPassword, setShowPassword] = useState(false);
+  const txtTitle = title || "";
+  const txtName = name || "";
+  const txtValue = value || "";
+  const fontSize = "text-[10px]";
   return (
-    <div className={`flex flex-col items-start gap-2 p-2 ${txtSize}`}>
-      <label
-        htmlFor={txtName}
-        className={`${txtUppercase} ${txtBold} ${txtColor}`}
-      >
-        {txtTitle}
-      </label>
-      <input
-        type={txtType}
-        id={txtName}
-        name={txtName}
-        onChange={onChange}
-        value={txtValue}
-        className="bg-blue-50 p-2 w-full rounded-sm border-none focus:outline-none "
-      />
+    <div
+      className={`${fontSize} flex flex-col w-full h-14 justify-between gap-2`}
+    >
+      {txtTitle && (
+        <label htmlFor={txtName} className="">
+          {txtTitle}
+        </label>
+      )}
+      {typeInput ? (
+        <div className="border border-gray-400 flex justify-between items-center rounded-sm">
+          <input
+            type={showPassword ? "text" : "password"}
+            className={` outline-none w-full px-2 ${fontSize} h-8`}
+            id={txtName}
+            name={txtName}
+            value={txtValue}
+            onChange={onChange}
+            disabled={disabled || false}
+          />
+          <span
+            className="px-2 cursor-pointer"
+            onClick={() => setShowPassword((pre) => !pre)}
+          >
+            {showPassword ? (
+              <i className="fa-solid fa-eye"></i>
+            ) : (
+              <i className="fa-solid fa-eye-slash"></i>
+            )}
+          </span>
+        </div>
+      ) : (
+        <input
+          autoFocus={autoFocus ? autoFocus : false}
+          id={txtName}
+          name={txtName}
+          value={txtValue}
+          onChange={onChange}
+          disabled={disabled || false}
+          type="text"
+          className={`border border-gray-400 rounded-sm outline-none px-2 ${fontSize} h-full`}
+        />
+      )}
     </div>
   );
 };
