@@ -1,0 +1,11 @@
+model nhomquyen {
+  id         Int           @id @default(autoincrement())
+  maQuyen    String?        @unique // ADMIN, NHANVIEN, GUYST, ...
+  tenQuyen        String?
+  moTa       String
+  trangThai  Int
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+  chitietquyen chitietquyen[]
+  taikhoan  taikhoan[]
+}

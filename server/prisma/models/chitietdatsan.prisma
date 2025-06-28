@@ -1,0 +1,17 @@
+model chitietdatsan {
+   id         Int      @id @default(autoincrement())
+  datSanId   Int
+  sanPhamId  Int
+  giaBan     Float
+  soLuong    Int
+  ghiChu     String
+  trangThai  Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  datsan     datsan   @relation(fields: [datSanId], references: [id])
+  sanpham    sanpham  @relation(fields: [sanPhamId], references: [id])
+
+  @@index([datSanId])
+  @@index([sanPhamId])
+}

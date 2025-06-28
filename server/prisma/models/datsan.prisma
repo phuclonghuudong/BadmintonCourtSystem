@@ -1,0 +1,26 @@
+model datsan {
+   id            Int            @id @default(autoincrement())
+  maDatSan      String
+  sanId         Int
+  khachHangId   Int
+  nhanVienId    Int
+  ngayDat       DateTime?
+  checkIn       DateTime?
+  checkOut      DateTime?
+  giaSan        Float?
+  tongTien      Float
+  thanhToan     String
+  ghiChu        String
+  trangThai     Int
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  chitietdatsan chitietdatsan[]
+  khachhang     khachhang      @relation(fields: [khachHangId], references: [id])
+  nhanvien      nhanvien       @relation(fields: [nhanVienId], references: [id])
+  san           san            @relation(fields: [sanId], references: [id])
+
+  @@index([khachHangId])
+  @@index([nhanVienId])
+  @@index([sanId])
+}

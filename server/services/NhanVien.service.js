@@ -1,25 +1,28 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-const getAllTaiKhoan = async () => {
-  return await prisma.nhanVien.findMany({
+// Lấy tất cả
+const getAllNhanVien = async () => {
+  return await prisma.nhanvien.findMany({
     include: {
       TaiKhoan: true,
     },
   });
 };
 
-const getTaiKhoanById = async (id) => {
-  return await prisma.nhanVien.findUnique({
-    where: { MaNhanVien: id },
+// Tìm theo Id
+const getNhanVienById = async (id) => {
+  return await prisma.nhanvien.findUnique({
+    where: { id: id },
     include: {
       TaiKhoan: true,
     },
   });
 };
 
-const createTaiKhoan = async (data) => {
-  return await prisma.taiKhoan.create({
+// Tạo mới
+const createNhanVien = async (data) => {
+  return await prisma.nhanvien.create({
     data: {
       MaNhomQuyen: DEFAULT_ROLE,
       ...data,
@@ -27,7 +30,18 @@ const createTaiKhoan = async (data) => {
   });
 };
 
-const updateTaiKhoan = async (id, data) => {
+// Cập nhật
+const updateNhanVien = async (id, data) => {
+  return await prisma.nhanvien.update({
+    where: { MaNhanVien: id },
+    data: {
+      MaNhomQuyen: data.MaNhomQuyen,
+      ...data,
+    },
+  });
+};
+// Cập nhật
+const deleteNhanVien = async (id, data) => {
   return await prisma.taiKhoan.update({
     where: { MaNhanVien: id },
     data: {
@@ -37,16 +51,17 @@ const updateTaiKhoan = async (id, data) => {
   });
 };
 
-const deleteTaiKhoan = async (id) => {
-  return await prisma.taiKhoan.delete({
+// Xóa thật
+const deleteData = async (id) => {
+  return await prisma.nhanvien.delete({
     where: { MaNhanVien: id },
   });
 };
 
 module.exports = {
-  getAllTaiKhoan,
-  createTaiKhoan,
-  updateTaiKhoan,
-  deleteTaiKhoan,
-  getTaiKhoanById,
+  getAllNhanVien,
+  getNhanVienById,
+  createNhanVien,
+  updateNhanVien,
+  getNhanVienById,
 };

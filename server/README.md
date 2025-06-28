@@ -15,6 +15,10 @@ B3: npx prisma init
 B4: npx prisma migrate dev --name init
 npm install cloudinary cookie-parser cors dotenv morgan multer bcryptjs nodemon express luxon
 
+npm run prisma:merge
+npx prisma format
+npx prisma generate
+
 BƯỚC 1: Cài đặt Prisma vào dự án
 Trong thư mục gốc dự án, chạy:
 

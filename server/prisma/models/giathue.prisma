@@ -1,0 +1,17 @@
+model giathue {
+  id            Int      @id @default(autoincrement())
+  sanId         Int
+  khungGioId    Int
+  thuTrongTuan  String?
+  giaTien       Float?
+  moTa          String
+  trangThai     Int
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  khunggio      khunggio @relation(fields: [khungGioId], references: [id])
+  san           san      @relation(fields: [sanId], references: [id])
+
+  @@index([khungGioId])
+  @@index([sanId])
+}

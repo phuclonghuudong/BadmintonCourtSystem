@@ -1,0 +1,16 @@
+model san {
+  id          Int       @id @default(autoincrement())
+  loaiSanId   Int
+  tenSan      String?
+  giaSan      Float?
+  moTa        String
+  hinhAnh     String
+  trangThai   Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  datsan     datsan[]
+  giathue    giathue[]
+  loaisan     loaisan   @relation(fields: [loaiSanId], references: [id])
+
+  @@index([loaiSanId])
+}

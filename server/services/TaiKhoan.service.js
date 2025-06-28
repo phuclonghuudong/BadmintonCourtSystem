@@ -1,8 +1,9 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+// lấy tất cả
 const getAllTaiKhoan = async () => {
-  return await prisma.taiKhoan.findMany({
+  return await prisma.taikhoan.findMany({
     include: {
       NhanVien: true,
       NhomQuyen: true,
@@ -10,8 +11,9 @@ const getAllTaiKhoan = async () => {
   });
 };
 
+// lấy theo id
 const getTaiKhoanById = async (id) => {
-  return await prisma.taiKhoan.findUnique({
+  return await prisma.taikhoan.findUnique({
     where: { Id: id },
     include: {
       NhanVien: true,
@@ -20,8 +22,9 @@ const getTaiKhoanById = async (id) => {
   });
 };
 
+//  Tạo mới
 const createTaiKhoan = async (data) => {
-  return await prisma.taiKhoan.create({
+  return await prisma.taikhoan.create({
     data: {
       ...data,
     },

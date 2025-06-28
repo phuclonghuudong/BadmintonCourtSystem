@@ -1,0 +1,10 @@
+model danhmucchucnang {
+  id          Int              @id @default(autoincrement())
+  maChucNang   String?        @unique
+  tenChucNang  String?
+  moTa        String
+  trangThai   Int
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  chitietquyen chitietquyen[]
+}

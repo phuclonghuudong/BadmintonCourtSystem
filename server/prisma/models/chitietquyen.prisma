@@ -1,0 +1,16 @@
+model chitietquyen {
+   id            Int              @id @default(autoincrement())
+  chucNangId    Int
+  nhomQuyenId   Int
+  hanhDong      String?
+  moTa          String
+  trangThai     Int
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  chucnang      danhmucchucnang  @relation(fields: [chucNangId], references: [id])
+  nhomquyen     nhomquyen        @relation(fields: [nhomQuyenId], references: [id])
+
+  @@index([chucNangId])
+  @@index([nhomQuyenId])
+}

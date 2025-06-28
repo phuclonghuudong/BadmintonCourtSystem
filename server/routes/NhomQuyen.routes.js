@@ -1,9 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const NhomQuyenController = require("../controllers/NhomQuyen.controller");
+const {
+  getAllNhomQuyen,
+  getNhomQuyenById,
+  createNhomQuyen,
+  updateNhomQuyen,
+  deleteNhomQuyen,
+} = require("../controllers/NhomQuyen.controller");
 const ROUTES = require("../constants/routerLink");
 
-router.get(`${ROUTES.NHOM_QUYEN.LIST}`, NhomQuyenController.getAllNhomQuyen);
-router.post(`${ROUTES.NHOM_QUYEN.CREATE}`, NhomQuyenController.createNhomQuyen);
+const PATH = ROUTES.NHOM_QUYEN;
+
+router.get(`${PATH.LIST}`, getAllNhomQuyen);
+router.get(`${PATH.DETAIL}`, getNhomQuyenById);
+router.post(`${PATH.CREATE}`, createNhomQuyen);
+router.put(`${PATH.UPDATE}`, updateNhomQuyen);
+router.put(`${PATH.DELETE}`, deleteNhomQuyen);
 
 module.exports = router;

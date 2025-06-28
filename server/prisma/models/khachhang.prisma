@@ -1,0 +1,14 @@
+model khachhang {
+  id          Int      @id @default(autoincrement())
+  hoTen       String?
+  email       String   @unique
+  cccd        String   @unique
+  soDienThoai String?  @unique
+  gioiTinh    Int
+  diaChi      String
+  ngaySinh    DateTime
+  trangThai   Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  datsan     datsan[]
+}

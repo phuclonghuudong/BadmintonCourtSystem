@@ -1,0 +1,10 @@
+model khunggio {
+  id          Int        @id @default(autoincrement())
+  gioBatDau   String?
+  gioKetThuc  String?
+  moTa        String
+  trangThai   Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  giathue   giathue[]
+}
