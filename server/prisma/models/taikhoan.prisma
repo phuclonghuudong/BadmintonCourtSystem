@@ -2,12 +2,12 @@ model taikhoan {
   id                    Int       @id @default(autoincrement())
   nhanVienId            Int
   nhomQuyenId           Int
-  tenDangNhap           String?
-  matKhau               String?
-  emailDaXacThuc        Boolean
-  otpQuenMatKhau        String
-  otpHetHanLuc          DateTime
-  refreshToken          String
+  tenDangNhap           String  @unique
+  matKhau               String
+  emailDaXacThuc        Boolean?
+  otpQuenMatKhau        String?
+  otpHetHanLuc          DateTime?
+  refreshToken          String?
   trangThai             Int
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt

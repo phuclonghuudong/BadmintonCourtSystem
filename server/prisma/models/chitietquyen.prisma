@@ -2,8 +2,8 @@ model chitietquyen {
    id            Int              @id @default(autoincrement())
   chucNangId    Int
   nhomQuyenId   Int
-  hanhDong      String?
-  moTa          String
+  hanhDong      String
+  moTa          String?
   trangThai     Int
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt

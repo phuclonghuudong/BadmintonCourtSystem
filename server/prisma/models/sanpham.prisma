@@ -1,12 +1,12 @@
 model sanpham {
   id              Int             @id @default(autoincrement())
   loaiSanPhamId   Int
-  tenSanPham      String?
-  giaSanPham      Float?
-  soLuong       Int?
-  donViTinh       String?
-  moTa            String
-  hinhAnh         String
+  tenSanPham      String
+  giaSanPham      Float
+  soLuong       Int
+  donViTinh       String
+  moTa            String?
+  hinhAnh         String?
   trangThai       Int
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt

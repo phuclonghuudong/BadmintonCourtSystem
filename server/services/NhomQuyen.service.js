@@ -1,7 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-// Lấy tất cả nhóm quyền
 const getAllNhomQuyen = async () => {
   return await prisma.nhomquyen.findMany({
     orderBy: {
@@ -10,7 +9,13 @@ const getAllNhomQuyen = async () => {
   });
 };
 
-// Lấy nhóm quyền theo ID
+const findNhomQuyenById = async (id) => {
+  return await prisma.nhomquyen.findUnique({
+    where: {
+      id: Number(id),
+    },
+  });
+};
 const findById = async (id) => {
   return await prisma.nhomquyen.findUnique({
     where: {
@@ -19,7 +24,6 @@ const findById = async (id) => {
   });
 };
 
-// Lấy mã quyền
 const findByMaQuyen = async (id) => {
   return await prisma.nhomquyen.findUnique({
     where: {
@@ -28,7 +32,6 @@ const findByMaQuyen = async (id) => {
   });
 };
 
-// Kiểm tra tồn tại của mã Quyền ngoại trừ vị trí hiện tại
 const checkExistMaQuyen = async (maQuyen, id) => {
   return await prisma.nhomquyen.findUnique({
     where: {
@@ -40,7 +43,6 @@ const checkExistMaQuyen = async (maQuyen, id) => {
   });
 };
 
-// Tạo nhóm quyền mới
 const createNhomQuyen = async (data) => {
   return await prisma.nhomquyen.create({
     data: {
@@ -52,7 +54,6 @@ const createNhomQuyen = async (data) => {
   });
 };
 
-// Cập nhật nhóm quyền
 const updateNhomQuyen = async (id, data) => {
   return await prisma.nhomquyen.update({
     where: {
@@ -67,7 +68,6 @@ const updateNhomQuyen = async (id, data) => {
   });
 };
 
-// Xóa mềm (đổi trạng thái)
 const deleteNhomQuyen = async (id) => {
   return await prisma.nhomquyen.update({
     where: {
@@ -91,6 +91,7 @@ const deleteHardNhomQuyen = async (id) => {
 module.exports = {
   getAllNhomQuyen,
   findById,
+  findNhomQuyenById,
   findByMaQuyen,
   checkExistMaQuyen,
   createNhomQuyen,

@@ -14,7 +14,7 @@ model chitietdatsan {
   sanPhamId  Int
   giaBan     Float
   soLuong    Int
-  ghiChu     String
+  ghiChu     String?
   trangThai  Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -31,8 +31,8 @@ model chitietquyen {
    id            Int              @id @default(autoincrement())
   chucNangId    Int
   nhomQuyenId   Int
-  hanhDong      String?
-  moTa          String
+  hanhDong      String
+  moTa          String?
   trangThai     Int
   createdAt     DateTime         @default(now())
   updatedAt     DateTime         @updatedAt
@@ -47,9 +47,9 @@ model chitietquyen {
 
 model danhmucchucnang {
   id          Int              @id @default(autoincrement())
-  maChucNang   String?        @unique
-  tenChucNang  String?
-  moTa        String
+  maChucNang   String       @unique
+  tenChucNang  String
+  moTa        String?
   trangThai   Int
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
@@ -63,13 +63,13 @@ model datsan {
   sanId         Int
   khachHangId   Int
   nhanVienId    Int
-  ngayDat       DateTime?
-  checkIn       DateTime?
-  checkOut      DateTime?
-  giaSan        Float?
-  tongTien      Float
-  thanhToan     String
-  ghiChu        String
+  ngayDat       DateTime
+  checkIn       DateTime
+  checkOut      DateTime
+  giaSan        Float
+  tongTien      Float?
+  thanhToan     String?
+  ghiChu        String?
   trangThai     Int
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -90,8 +90,8 @@ model giathue {
   sanId         Int
   khungGioId    Int
   thuTrongTuan  String?
-  giaTien       Float?
-  moTa          String
+  giaTien       Float
+  moTa          String?
   trangThai     Int
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -106,13 +106,13 @@ model giathue {
 
 model khachhang {
   id          Int      @id @default(autoincrement())
-  hoTen       String?
-  email       String   @unique
-  cccd        String   @unique
-  soDienThoai String?  @unique
-  gioiTinh    Int
-  diaChi      String
-  ngaySinh    DateTime
+  hoTen       String
+  email       String?   @unique
+  cccd        String?   @unique
+  soDienThoai String  @unique
+  gioiTinh    Int?
+  diaChi      String?
+  ngaySinh    DateTime?
   trangThai   Int
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -121,9 +121,9 @@ model khachhang {
 
 model khunggio {
   id          Int        @id @default(autoincrement())
-  gioBatDau   String?
-  gioKetThuc  String?
-  moTa        String
+  gioBatDau   String
+  gioKetThuc  String
+  moTa        String?
   trangThai   Int
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -132,8 +132,8 @@ model khunggio {
 
 model loaisan {
   id        Int      @id @default(autoincrement())
-  tenLoaiSan      String?
-  moTa      String
+  tenLoaiSan      String
+  moTa      String?
   trangThai Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -142,8 +142,8 @@ model loaisan {
 
 model loaisanpham {
    id         Int       @id @default(autoincrement())
-  tenLoaiSanPham       String?
-  moTa       String
+  tenLoaiSanPham       String
+  moTa       String?
   trangThai  Int
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
@@ -153,13 +153,13 @@ model loaisanpham {
 model nhanvien {
   id          Int        @id @default(autoincrement())
   hoTen       String    
-  email       String?      @unique
-  cccd        String       @unique
-  soDienThoai String?       @unique
-  gioiTinh    Int
-  diaChi      String
-  ngaySinh    DateTime
-  hinhAnh     String
+  email       String      @unique
+  cccd        String?       @unique
+  soDienThoai String       @unique
+  gioiTinh    Int?
+  diaChi      String?
+  ngaySinh    DateTime?
+  hinhAnh     String?
   trangThai   Int
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
@@ -169,9 +169,9 @@ model nhanvien {
 
 model nhomquyen {
   id         Int           @id @default(autoincrement())
-  maQuyen    String?        @unique // ADMIN, NHANVIEN, GUYST, ...
-  tenQuyen        String?
-  moTa       String
+  maQuyen    String        @unique // ADMIN, NHANVIEN, GUYST, ...
+  tenQuyen        String
+  moTa       String?
   trangThai  Int
   createdAt  DateTime      @default(now())
   updatedAt  DateTime      @updatedAt
@@ -182,10 +182,10 @@ model nhomquyen {
 model san {
   id          Int       @id @default(autoincrement())
   loaiSanId   Int
-  tenSan      String?
-  giaSan      Float?
-  moTa        String
-  hinhAnh     String
+  tenSan      String
+  giaSan      Float
+  moTa        String?
+  hinhAnh     String?
   trangThai   Int
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -199,12 +199,12 @@ model san {
 model sanpham {
   id              Int             @id @default(autoincrement())
   loaiSanPhamId   Int
-  tenSanPham      String?
-  giaSanPham      Float?
-  soLuong       Int?
-  donViTinh       String?
-  moTa            String
-  hinhAnh         String
+  tenSanPham      String
+  giaSanPham      Float
+  soLuong       Int
+  donViTinh       String
+  moTa            String?
+  hinhAnh         String?
   trangThai       Int
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
@@ -218,12 +218,12 @@ model taikhoan {
   id                    Int       @id @default(autoincrement())
   nhanVienId            Int
   nhomQuyenId           Int
-  tenDangNhap           String?
-  matKhau               String?
-  emailDaXacThuc        Boolean
-  otpQuenMatKhau        String
-  otpHetHanLuc          DateTime
-  refreshToken          String
+  tenDangNhap           String  @unique
+  matKhau               String
+  emailDaXacThuc        Boolean?
+  otpQuenMatKhau        String?
+  otpHetHanLuc          DateTime?
+  refreshToken          String?
   trangThai             Int
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt

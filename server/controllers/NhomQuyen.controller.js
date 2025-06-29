@@ -53,8 +53,9 @@ const createNhomQuyen = async (req, res, next) => {
       trangThai,
       moTa,
     });
+    if (!result) return responseHandler(res, 404, "THÊM THẤT BẠI!", null, true);
 
-    responseHandler(res, 200, "THÊM MỚI NHÓM QUYỀN THÀNH CÔNG!", result);
+    responseHandler(res, 201, "THÊM MỚI NHÓM QUYỀN THÀNH CÔNG!", result);
   } catch (error) {
     next(error);
   }

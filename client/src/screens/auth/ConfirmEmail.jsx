@@ -1,13 +1,11 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "../../components/ui/Button";
-import FormCheckBox from "../../components/ui/FormCheckBox";
 import FormInput from "../../components/ui/FormInput";
-
-const Login = () => {
+const ConfirmEmail = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState({
-    Username: "",
-    Password: "",
+    Email: "",
   });
   const [loading, setLoading] = useState(false);
   const validateValue = Object.values(data).every((el) => el);
@@ -22,10 +20,13 @@ const Login = () => {
       };
     });
   };
+  const handleSubmit = async () => {
+    navigate("/verify-otp");
+  };
   return (
     <div className="bg-white/80 backdrop-blur-sm flex flex-col justify-center items-center gap-4 w-full h-full rounded-lg z-10 p-4">
       <div className="w-full max-w-sm h-full flex flex-col justify-center items-center">
-        <p className="text-xl uppercase font-bold">Log in to your account</p>
+        <p className="text-xl uppercase font-bold">Email Verification</p>
         <p className="text-[10px]">
           Welcome back MOLXIPI! Please enter your details.
         </p>
@@ -33,40 +34,26 @@ const Login = () => {
         <div className="w-full py-5 grid gap-2">
           <FormInput
             autoFocus
-            title={"Username"}
-            name={"Username"}
-            value={data?.Username}
-            onChange={handleOnchange}
-          />
-          <FormInput
-            typeInput="password"
-            title={"Password"}
-            name={"Password"}
-            value={data?.Password}
+            title={"Email"}
+            name={"Email"}
+            value={data?.Email}
             onChange={handleOnchange}
           />
 
-          <div className="flex justify-between items-center">
-            <FormCheckBox />
+          <div className="flex justify-end">
+            <p className={"text-[10px] pr-2"}>Already have an account? </p>
             <Link
-              to={"/confirm-email"}
+              to={"/"}
               className="text-orange-600 font-semibold text-[10px]"
             >
-              Forgot password
+              Login
             </Link>
           </div>
 
-          <Button title={"Sign in"} color={"orange"} />
           <Button
-            icon={
-              <img
-                width="20"
-                height="20"
-                src="https://img.icons8.com/color/48/google-logo.png"
-                alt="google-logo"
-              />
-            }
-            title={"Sign up with Google"}
+            title={"Confirm Email"}
+            color={"orange"}
+            onClick={handleSubmit}
           />
         </div>
 
@@ -81,4 +68,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ConfirmEmail;

@@ -8,6 +8,33 @@ module.exports = Object.freeze({
     SIGNUP: "/user/signup",
   },
 
+  NHAN_VIEN: {
+    BASE: "/nhan-vien",
+    LIST: "/list",
+    DETAIL: "/:id",
+    CREATE: "/create",
+    UPDATE: "/update/:id",
+    DELETE: "/delete/:id",
+  },
+
+  TAI_KHOAN: {
+    BASE: "/tai-khoan",
+    LIST: "/list",
+    DETAIL: "/:id",
+    CREATE: "/create",
+    UPDATE: "/update/:id",
+    DELETE: "/delete/:id",
+  },
+
+  KHACH_HANG: {
+    BASE: "/khach-hang",
+    LIST: "/list",
+    DETAIL: "/:id",
+    CREATE: "/create",
+    UPDATE: "/update/:id",
+    DELETE: "/delete/:id",
+  },
+
   NHOM_QUYEN: {
     BASE: "/nhom-quyen",
     LIST: "/list",

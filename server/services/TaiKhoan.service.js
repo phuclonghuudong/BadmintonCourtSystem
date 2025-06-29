@@ -1,40 +1,75 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
-// lấy tất cả
 const getAllTaiKhoan = async () => {
   return await prisma.taikhoan.findMany({
     include: {
-      NhanVien: true,
-      NhomQuyen: true,
+      nhanvien: true,
+      nhomquyen: true,
     },
   });
 };
-
-// lấy theo id
-const getTaiKhoanById = async (id) => {
-  return await prisma.taikhoan.findUnique({
-    where: { Id: id },
+const getAllTaiKhoanActive = async () => {
+  return await prisma.taikhoan.findMany({
+    where: {
+      trangThai: {
+        NOT: -1,
+      },
+    },
     include: {
-      NhanVien: true,
-      NhomQuyen: true,
+      nhanvien: true,
+      nhomquyen: true,
     },
   });
 };
 
-//  Tạo mới
+const findTaiKhoanById = async (id) => {
+  return await prisma.taikhoan.findUnique({
+    where: { id: Number(id) },
+    include: {
+      nhanvien: true,
+      nhomquyen: true,
+    },
+  });
+};
+
+const findTaiKhoanByTenDangNhap = async (id) => {
+  return await prisma.taikhoan.findUnique({
+    where: { tenDangNhap: tenDangNhap },
+    include: {
+      nhanvien: true,
+      nhomquyen: true,
+    },
+  });
+};
+
+const checkExistTenDangNhap = async (tenDangNhap) => {
+  return await prisma.taikhoan.findUnique({
+    where: { tenDangNhap: tenDangNhap },
+  });
+};
+
 const createTaiKhoan = async (data) => {
   return await prisma.taikhoan.create({
     data: {
-      ...data,
+      nhanVienId: Number(data.nhanVienId),
+      nhomQuyenId: Number(data.nhomQuyenId),
+      tenDangNhap: data.tenDangNhap,
+      matKhau: data.matKhau,
+      emailDaXacThuc: data.emailDaXacThuc ?? false,
+      otpQuenMatKhau: data.otpQuenMatKhau ?? null,
+      otpHetHanLuc: data.otpHetHanLuc ?? null,
+      refreshToken: data.refreshToken ?? null,
+      trangThai: data.trangThai ?? 1,
     },
   });
 };
 
 module.exports = {
   getAllTaiKhoan,
+  getAllTaiKhoanActive,
+  findTaiKhoanById,
+  findTaiKhoanByTenDangNhap,
+  checkExistTenDangNhap,
   createTaiKhoan,
-  updateTaiKhoan,
-  deleteTaiKhoan,
-  getTaiKhoanById,
 };

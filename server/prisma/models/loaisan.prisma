@@ -1,7 +1,7 @@
 model loaisan {
   id        Int      @id @default(autoincrement())
-  tenLoaiSan      String?
-  moTa      String
+  tenLoaiSan      String
+  moTa      String?
   trangThai Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

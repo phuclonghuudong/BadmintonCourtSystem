@@ -5,9 +5,11 @@ import FormInput from "../../components/ui/FormInput";
 
 const SignUp = () => {
   const [data, setData] = useState({
-    Username: "",
-    Email: "",
-    Password: "",
+    hoTen: "",
+    tenDangNhap: "'",
+    email: "",
+    soDienThoai: "",
+    matKhau: "",
   });
   const [loading, setLoading] = useState(false);
   const validateValue = Object.values(data).every((el) => el);
@@ -31,23 +33,38 @@ const SignUp = () => {
         <div className="w-full py-5 grid gap-2 ">
           <FormInput
             autoFocus
-            title={"Name*"}
-            name={"Username"}
-            value={data?.Username}
+            title={"First and last name*"}
+            name={"hoTen"}
+            value={data?.hoTen}
             onChange={handleOnchange}
           />
 
           <FormInput
             title={"Email*"}
-            name={"Email"}
-            value={data?.Email}
+            name={"email"}
+            value={data?.email}
             onChange={handleOnchange}
           />
+
+          <FormInput
+            title={"Phone*"}
+            name={"soDienThoai"}
+            value={data?.soDienThoai}
+            onChange={handleOnchange}
+          />
+
+          <FormInput
+            title={"Username*"}
+            name={"tenDangNhap"}
+            value={data?.tenDangNhap}
+            onChange={handleOnchange}
+          />
+
           <FormInput
             typeInput="password"
             title={"Password*"}
-            name={"Password"}
-            value={data?.Password}
+            name={"matKhau"}
+            value={data?.matKhau}
             onChange={handleOnchange}
           />
           <div class="h-2"></div>

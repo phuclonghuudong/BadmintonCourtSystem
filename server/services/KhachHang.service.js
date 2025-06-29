@@ -6,47 +6,38 @@ const parseBirthday = async (value) => {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 };
 
-const getAllNhanVien = async () => {
-  return await prisma.nhanvien.findMany({
-    include: {
-      taikhoan: true,
-    },
+const getAllKhachHang = async () => {
+  return await prisma.khachhang.findMany({
     orderBy: {
       id: "asc",
     },
   });
 };
 
-const getAllNhanVienActive = async () => {
-  return await prisma.nhanvien.findMany({
+const getAllKhachHangActive = async () => {
+  return await prisma.khachhang.findMany({
     where: {
       trangThai: {
         not: -1,
       },
     },
-    include: {
-      taikhoan: true,
-    },
     orderBy: {
       id: "asc",
     },
   });
 };
 
-const findNhanVienById = async (id) => {
-  return await prisma.nhanvien.findUnique({
+const findKhachHangById = async (id) => {
+  return await prisma.khachhang.findUnique({
     where: {
       id: Number(id),
-    },
-    include: {
-      taikhoan: true,
     },
   });
 };
 
-const createNhanVien = async (data) => {
+const createKhachHang = async (data) => {
   const parsedNgaySinh = await parseBirthday(data.ngaySinh);
-  return await prisma.nhanvien.create({
+  return await prisma.khachhang.create({
     data: {
       hoTen: data.hoTen,
       email: data.email,
@@ -61,9 +52,9 @@ const createNhanVien = async (data) => {
   });
 };
 
-const updateNhanVien = async (id, data) => {
+const updateKhachHang = async (id, data) => {
   const parsedNgaySinh = await parseBirthday(data.ngaySinh);
-  return await prisma.nhanvien.update({
+  return await prisma.khachhang.update({
     where: { id: Number(id) },
     data: {
       hoTen: data.hoTen,
@@ -79,15 +70,15 @@ const updateNhanVien = async (id, data) => {
   });
 };
 
-const deleteNhanVien = async (id) => {
-  return await prisma.nhanvien.update({
+const deleteKhachHang = async (id) => {
+  return await prisma.khachhang.update({
     where: { id: id },
     data: { trangThai: -1 },
   });
 };
 
 const findByEmail = async (email) => {
-  return await prisma.nhanvien.findUnique({
+  return await prisma.khachhang.findUnique({
     where: {
       email: email,
     },
@@ -95,7 +86,7 @@ const findByEmail = async (email) => {
 };
 
 const findByCCCD = async (value) => {
-  return await prisma.nhanvien.findUnique({
+  return await prisma.khachhang.findUnique({
     where: {
       cccd: value,
     },
@@ -103,7 +94,7 @@ const findByCCCD = async (value) => {
 };
 
 const findBySoDienThoai = async (value) => {
-  return await prisma.nhanvien.findUnique({
+  return await prisma.khachhang.findUnique({
     where: {
       soDienThoai: value,
     },
@@ -111,7 +102,7 @@ const findBySoDienThoai = async (value) => {
 };
 
 const checkExistEmail = async (email, id) => {
-  return await prisma.nhanvien.findUnique({
+  return await prisma.khachhang.findUnique({
     where: {
       email: email,
       NOT: {
@@ -122,7 +113,7 @@ const checkExistEmail = async (email, id) => {
 };
 
 const checkExistCCCD = async (cccd, id) => {
-  return await prisma.nhanvien.findUnique({
+  return await prisma.khachhang.findUnique({
     where: {
       cccd: cccd,
       NOT: {
@@ -131,8 +122,9 @@ const checkExistCCCD = async (cccd, id) => {
     },
   });
 };
+
 const checkExistSoDienThoai = async (soDienThoai, id) => {
-  return await prisma.nhanvien.findUnique({
+  return await prisma.khachhang.findUnique({
     where: {
       soDienThoai: soDienThoai,
       NOT: {
@@ -144,18 +136,18 @@ const checkExistSoDienThoai = async (soDienThoai, id) => {
 
 // DELETE HARD
 const deleteData = async (id) => {
-  return await prisma.nhanvien.delete({
+  return await prisma.khachhang.delete({
     where: { id: id },
   });
 };
 
 module.exports = {
-  getAllNhanVien,
-  getAllNhanVienActive,
-  findNhanVienById,
-  createNhanVien,
-  updateNhanVien,
-  deleteNhanVien,
+  getAllKhachHang,
+  getAllKhachHangActive,
+  findKhachHangById,
+  createKhachHang,
+  updateKhachHang,
+  deleteKhachHang,
   findByCCCD,
   findByEmail,
   findBySoDienThoai,

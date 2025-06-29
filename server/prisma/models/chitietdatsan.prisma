@@ -4,7 +4,7 @@ model chitietdatsan {
   sanPhamId  Int
   giaBan     Float
   soLuong    Int
-  ghiChu     String
+  ghiChu     String?
   trangThai  Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
