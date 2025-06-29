@@ -9,9 +9,13 @@ const sanPhamRoutes = require("./SanPham.routes");
 const taiKhoanRoutes = require("./TaiKhoan.routes");
 const loaiSanPhamRoutes = require("./LoaiSanPham.routes");
 const chucNangRoutes = require("./DanhMucChucNang.routes");
+const accountRoutes = require("./Account.routes");
+
 const ROUTER_LINK = require("../constants/routerLink");
 
 const BASE_PATH = `${ROUTER_LINK.API}${ROUTER_LINK.VERSION}`;
+
+router.use(`${BASE_PATH}${ROUTER_LINK.ACCOUNT.BASE}`, accountRoutes);
 
 router.use(`${BASE_PATH}${ROUTER_LINK.NHAN_VIEN.BASE}`, nhanVienRoutes);
 

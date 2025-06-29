@@ -2,10 +2,10 @@ module.exports = Object.freeze({
   API: "/api",
   VERSION: "/v1",
 
-  USER: {
-    BASE: "/user",
-    LOGIN: "/user/login",
-    SIGNUP: "/user/signup",
+  ACCOUNT: {
+    BASE: "/account",
+    LOGIN: "/login",
+    SIGNUP: "/signup",
   },
 
   NHAN_VIEN: {

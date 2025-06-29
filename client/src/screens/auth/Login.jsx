@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import apiService from "../../apis/apiService";
 import Button from "../../components/ui/Button";
 import FormCheckBox from "../../components/ui/FormCheckBox";
 import FormInput from "../../components/ui/FormInput";
+import summaryApi from "../../constants/summaryApi";
 
 const Login = () => {
   const [data, setData] = useState({
@@ -21,6 +24,24 @@ const Login = () => {
         [name]: value,
       };
     });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+
+      const response = await apiService(summaryApi.login, { data: data });
+      console.log("CHECK:", response);
+      if (response.ERROR) {
+        toast.error(response?.MESSAGE);
+      }
+
+      toast.success(response?.MESSAGE);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="bg-white/80 backdrop-blur-sm flex flex-col justify-center items-center gap-4 w-full h-full rounded-lg z-10 p-4">
@@ -56,7 +77,7 @@ const Login = () => {
             </Link>
           </div>
 
-          <Button title={"Sign in"} color={"orange"} />
+          <Button title={"Sign in"} color={"orange"} onClick={handleSubmit} />
           <Button
             icon={
               <img

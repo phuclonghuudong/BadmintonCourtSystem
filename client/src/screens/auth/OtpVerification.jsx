@@ -1,25 +1,13 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../../components/ui/Button";
-import FormInput from "../../components/ui/FormInput";
-const ConfirmOtp = () => {
+
+const OtpVerification = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState({
-    Email: "",
-  });
+  const [data, setData] = useState(["", "", "", "", "", ""]);
+  const inputRef = useRef([]);
   const [loading, setLoading] = useState(false);
   const validateValue = Object.values(data).every((el) => el);
-
-  const handleOnchange = (event) => {
-    const { name, value } = event.target;
-
-    setData((pre) => {
-      return {
-        ...pre,
-        [name]: value,
-      };
-    });
-  };
 
   const handleSubmit = async () => {
     navigate("/reset-password");
@@ -27,19 +15,41 @@ const ConfirmOtp = () => {
   return (
     <div className="bg-white/80 backdrop-blur-sm flex flex-col justify-center items-center gap-4 w-full h-full rounded-lg z-10 p-4">
       <div className="w-full max-w-sm h-full flex flex-col justify-center items-center">
-        <p className="text-xl uppercase font-bold">OTP Authentication</p>
+        <p className="text-xl uppercase font-bold">OTP Verification</p>
         <p className="text-[10px]">
           Welcome back MOLXIPI! Please enter your details.
         </p>
 
         <div className="w-full py-5 grid gap-2">
-          <FormInput
-            autoFocus
-            title={"OTP"}
-            name={"Email"}
-            value={data?.Email}
-            onChange={handleOnchange}
-          />
+          <div className="flex items-center gap-3 justify-between">
+            {data.map((e, index) => {
+              return (
+                <input
+                  key={"opt" + index}
+                  ref={(ref) => {
+                    inputRef.current[index] = ref;
+                    return ref;
+                  }}
+                  type="text"
+                  maxLength={1}
+                  value={data[index]}
+                  onChange={(e) => {
+                    const value = e.target.value;
+
+                    const newData = [...data];
+                    newData[index] = value;
+                    setData(newData);
+
+                    if (value && index < 5) {
+                      inputRef.current[index + 1].focus();
+                    }
+                  }}
+                  id="otp"
+                  className="text-center bg-blue-50 w-full max-w-16 p-2 border-none rounded outline-none focus:border-orange-200 font-semibold"
+                />
+              );
+            })}
+          </div>
 
           <div className="flex justify-end">
             <p className={"text-[10px] pr-2"}>Resend verification code! </p>
@@ -52,7 +62,7 @@ const ConfirmOtp = () => {
           </div>
 
           <Button
-            title={"Confirmation"}
+            title={"Verify OTP"}
             color={"orange"}
             onClick={handleSubmit}
           />
@@ -69,4 +79,4 @@ const ConfirmOtp = () => {
   );
 };
 
-export default ConfirmOtp;
+export default OtpVerification;
