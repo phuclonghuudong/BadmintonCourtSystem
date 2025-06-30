@@ -92,7 +92,7 @@ const SignUp = () => {
             value={data?.matKhau}
             onChange={handleOnchange}
           />
-          <div classname="h-2"></div>
+          <div className="h-2"></div>
 
           {loading ? (
             <LoadingAlert />

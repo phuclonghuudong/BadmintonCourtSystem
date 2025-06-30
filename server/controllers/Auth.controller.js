@@ -171,13 +171,14 @@ const signupAccount = async (req, res, next) => {
       trangThai: 2,
     });
     const NhanVienID = createNhanVien?.id;
+    const NhomQuyenID = findNhomQuyenId?.id;
     const hashPass = await hashPassword(matKhau);
 
     if (createNhanVien) {
       const createTaiKhoan = await taiKhoanService.createTaiKhoan({
         nhanVienId: NhanVienID,
         tenDangNhap,
-        nhomQuyenId: roleCreate,
+        nhomQuyenId: NhomQuyenID,
         matKhau: hashPass,
         trangThai: 2,
       });
@@ -271,8 +272,65 @@ const verifyEmail = async (req, res, next) => {
   }
 };
 
+const otpVerification = async (req, res, next) => {
+  const { Email, Otp } = req.body;
+  try {
+    if (!Email || !Otp || Otp.length !== 6)
+      return responseHandler(
+        res,
+        400,
+        "Vui lòng nhập đầy đủ thông tin!",
+        null,
+        true
+      );
+
+    const findByEmail = await nhanVienService.findByEmail(Email);
+    const NhanVienID = findByEmail?.id;
+
+    if (!NhanVienID)
+      return responseHandler(res, 404, "TÀI KHOẢN KHÔNG TỒN TẠI.", null, true);
+
+    const findTaiKhoanByNhanVienId =
+      await taiKhoanService.findTaiKhoanByNhanVienId(NhanVienID);
+    if (!findTaiKhoanByNhanVienId)
+      return responseHandler(res, 404, "TÀI KHOẢN KHÔNG TỒN TẠI.", null, true);
+
+    const currentTime = new Date();
+    const otpExpiry = findTaiKhoanByNhanVienId?.otpHetHanLuc;
+    const otpResetPassword = findTaiKhoanByNhanVienId?.otpQuenMatKhau;
+    const TaiKhoanID = findTaiKhoanByNhanVienId?.id;
+
+    if (!otpExpiry || otpExpiry < currentTime)
+      return responseHandler(res, 400, "OTP ĐÃ HẾT HẠN.", null, true);
+
+    if (otpResetPassword !== Otp)
+      return responseHandler(
+        res,
+        400,
+        "MÃ XÁC THỰC KHÔNG ĐÚNG HOẶC ĐÃ HẾT HẠN.",
+        null,
+        true
+      );
+
+    await taiKhoanService.updateVerifyOTPResetPassword(TaiKhoanID, {
+      emailDaXacThuc: false,
+      otpQuenMatKhau: "",
+      otpHetHanLuc: "",
+    });
+
+    responseHandler(
+      res,
+      200,
+      "XÁC NHẬN OTP THÀNH CÔNG. VUI LÒNG ĐỔI MẬT KHẨU CỦA BẠN"
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   loginAccount,
   signupAccount,
   verifyEmail,
+  otpVerification,
 };

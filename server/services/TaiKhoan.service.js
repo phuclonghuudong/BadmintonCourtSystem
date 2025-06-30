@@ -93,6 +93,17 @@ const updateVerifyEmailResetPassword = async (id, data) => {
   });
 };
 
+const updateVerifyOTPResetPassword = async (id, data) => {
+  return await prisma.taikhoan.update({
+    where: { id: Number(id) },
+    data: {
+      emailDaXacThuc: 0 || false,
+      otpQuenMatKhau: String(data.otpQuenMatKhau) || null,
+      otpHetHanLuc: data.otpHetHanLuc || null,
+    },
+  });
+};
+
 module.exports = {
   getAllTaiKhoan,
   getAllTaiKhoanActive,
@@ -103,4 +114,5 @@ module.exports = {
   checkExistTenDangNhap,
   createTaiKhoan,
   updateVerifyEmailResetPassword,
+  updateVerifyOTPResetPassword,
 };

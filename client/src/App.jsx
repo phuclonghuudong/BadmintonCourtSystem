@@ -13,7 +13,7 @@ export const App = () => {
         closeOnClick
         pauseOnHover
         draggable
-        theme="colored" // hoặc "light"/"dark"
+        theme="light"
       />
     </>
   );

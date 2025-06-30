@@ -13,6 +13,10 @@ const summaryApi = {
     url: "/account/verify-email",
     method: "post",
   },
+  otp_verification: {
+    url: "/account/verify-otp",
+    method: "put",
+  },
 };
 
 export default summaryApi;

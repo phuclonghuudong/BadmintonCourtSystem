@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import apiService from "../../apis/apiService";
 import Button from "../../components/ui/Button";
+import summaryApi from "../../constants/summaryApi";
 
 const OtpVerification = () => {
   const navigate = useNavigate();
@@ -19,7 +21,23 @@ const OtpVerification = () => {
   }, []);
 
   const handleSubmit = async () => {
-    navigate("/reset-password");
+    try {
+      setLoading(true);
+
+      const result = await apiService(summaryApi.otp_verification, {
+        data: { Otp: data.join(""), Email: location?.state?.Email },
+      });
+      if (result?.ERROR) return toast.error(result?.MESSAGE);
+
+      if (result?.SUCCESS) {
+        toast.success(result?.MESSAGE);
+        navigate("/reset-password", { state: location?.state?.Email });
+      }
+    } catch (error) {
+      toast.error(error?.MESSAGE || error);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="bg-white/80 backdrop-blur-sm flex flex-col justify-center items-center gap-4 w-full h-full rounded-lg z-10 p-4">
