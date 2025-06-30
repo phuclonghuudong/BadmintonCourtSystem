@@ -1,8 +1,12 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import apiService from "../../apis/apiService";
 import Button from "../../components/ui/Button";
 import FormInput from "../../components/ui/FormInput";
-const ConfirmEmail = () => {
+import LoadingAlert from "../../components/ui/LoadingAlert";
+import summaryApi from "../../constants/summaryApi";
+const VerifyEmail = () => {
   const navigate = useNavigate();
   const [data, setData] = useState({
     Email: "",
@@ -20,8 +24,25 @@ const ConfirmEmail = () => {
       };
     });
   };
+
   const handleSubmit = async () => {
-    navigate("/verify-otp");
+    try {
+      setLoading(true);
+
+      const result = await apiService(summaryApi.verify_email, { data: data });
+      if (result?.ERROR) {
+        toast.error(result?.MESSAGE);
+      }
+
+      if (result?.SUCCESS) {
+        toast.success(result?.MESSAGE);
+        navigate("/verify-otp", { state: data });
+      }
+    } catch (error) {
+      toast.error(error?.MESSAGE || error);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="bg-white/80 backdrop-blur-sm flex flex-col justify-center items-center gap-4 w-full h-full rounded-lg z-10 p-4">
@@ -50,11 +71,15 @@ const ConfirmEmail = () => {
             </Link>
           </div>
 
-          <Button
-            title={"Confirm Email"}
-            color={"orange"}
-            onClick={handleSubmit}
-          />
+          {loading ? (
+            <LoadingAlert />
+          ) : (
+            <Button
+              title={"Confirm Email"}
+              color={"orange"}
+              onClick={handleSubmit}
+            />
+          )}
         </div>
 
         <p className="text-[10px] text-right ">
@@ -68,4 +93,4 @@ const ConfirmEmail = () => {
   );
 };
 
-export default ConfirmEmail;
+export default VerifyEmail;

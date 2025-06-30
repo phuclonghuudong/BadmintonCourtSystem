@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import apiService from "../../apis/apiService";
 import Button from "../../components/ui/Button";
 import FormInput from "../../components/ui/FormInput";
+import LoadingAlert from "../../components/ui/LoadingAlert";
 import summaryApi from "../../constants/summaryApi";
 
 const SignUp = () => {
@@ -93,7 +94,15 @@ const SignUp = () => {
           />
           <div classname="h-2"></div>
 
-          <Button title={"Get started"} color="orange" onClick={handleSubmit} />
+          {loading ? (
+            <LoadingAlert />
+          ) : (
+            <Button
+              title={"Get started"}
+              color="orange"
+              onClick={handleSubmit}
+            />
+          )}
           <Button
             icon={
               <img

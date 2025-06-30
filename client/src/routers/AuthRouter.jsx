@@ -1,9 +1,9 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import ConfirmEmail from "../screens/auth/ConfirmEmail";
 import Login from "../screens/auth/Login";
 import OtpVerification from "../screens/auth/OtpVerification";
 import ResetPassword from "../screens/auth/ResetPassword";
 import SignUp from "../screens/auth/SignUp";
+import VerifyEmail from "../screens/auth/VerifyEmail";
 
 const AuthRouter = () => {
   return (
@@ -14,7 +14,7 @@ const AuthRouter = () => {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/sign-up" element={<SignUp />} />
-            <Route path="/confirm-email" element={<ConfirmEmail />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/verify-otp" element={<OtpVerification />} />
             <Route path="/reset-password" element={<ResetPassword />} />
           </Routes>

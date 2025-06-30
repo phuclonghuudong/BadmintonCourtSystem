@@ -6,6 +6,7 @@ module.exports = Object.freeze({
     BASE: "/account",
     LOGIN: "/login",
     SIGNUP: "/signup",
+    VERIFY_EMAIL: "/verify-email",
   },
 
   NHAN_VIEN: {

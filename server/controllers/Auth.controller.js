@@ -11,6 +11,9 @@ const {
   isValidPhone,
   isValidPassword,
 } = require("../utils/ValidateInput");
+const generateOtp = require("../utils/generateOtp");
+const sendEmail = require("../config/sendMail");
+const VerifyEmailTemplate = require("../utils/verifyEmailTemplate");
 
 const loginAccount = async (req, res, next) => {
   let { Username, Password } = req.body;
@@ -98,14 +101,19 @@ const loginAccount = async (req, res, next) => {
 };
 
 const signupAccount = async (req, res, next) => {
-  const roleCreate = process.env.ROLE_REGISTER_ACCOUNT;
+  const roleCreate = process.env.ROLE_REGISTER_ACCOUNT || "KHACH";
+
   let { tenDangNhap, hoTen, email, soDienThoai, matKhau } = req.body;
   tenDangNhap = tenDangNhap?.replace(/\s+/g, "");
   email = email?.trim();
   soDienThoai = soDienThoai?.trim();
   matKhau = matKhau?.trim();
   hoTen = hoTen?.trim();
+
   try {
+    if (!roleCreate)
+      return responseHandler(res, 400, "Chưa có nhóm qyền!", null, true);
+
     if (!tenDangNhap || !hoTen || !email || !soDienThoai || !matKhau)
       return responseHandler(
         res,
@@ -114,6 +122,10 @@ const signupAccount = async (req, res, next) => {
         null,
         true
       );
+
+    const findNhomQuyenId = await nhomQuyenService.findByMaQuyen(roleCreate);
+    if (!findNhomQuyenId)
+      return responseHandler(res, 422, "NHÓM QUYỀN KHÔNG HỢP LỆ!", null, true);
 
     const checkValidEmail = await isValidEmail(email);
     if (!checkValidEmail)
@@ -156,6 +168,7 @@ const signupAccount = async (req, res, next) => {
       hoTen,
       email,
       soDienThoai,
+      trangThai: 2,
     });
     const NhanVienID = createNhanVien?.id;
     const hashPass = await hashPassword(matKhau);
@@ -178,7 +191,88 @@ const signupAccount = async (req, res, next) => {
   }
 };
 
+const verifyEmail = async (req, res, next) => {
+  const { Email } = req.body;
+  try {
+    if (!Email)
+      return responseHandler(
+        res,
+        400,
+        "Vui lòng nhập đầy đủ thông tin!",
+        null,
+        true
+      );
+
+    const validEmail = await isValidEmail(Email);
+    if (!validEmail)
+      return responseHandler(
+        res,
+        422,
+        "EMAIL KHÔNG ĐÚNG ĐỊNH DẠNG!",
+        null,
+        true
+      );
+
+    const findByEmail = await nhanVienService.findByEmail(Email);
+    if (!findByEmail)
+      return responseHandler(res, 422, "EMAIL KHÔNG TỒN TẠI!", null, true);
+
+    if (findByEmail?.trangThai === -1)
+      return responseHandler(res, 404, "TÀI KHOẢN KHÔNG TỒN TẠI.", null, true);
+
+    if (findByEmail?.trangThai === 0)
+      return responseHandler(res, 403, "TÀI KHOẢN ĐÃ BỊ KHÓA.", null, true);
+
+    if (findByEmail?.trangThai === 2)
+      return responseHandler(
+        res,
+        401,
+        "TÀI KHOẢN CHƯA ĐƯỢC XÁC NHẬN.",
+        null,
+        true
+      );
+
+    const otp = generateOtp();
+    const expireTime = new Date(Date.now() + 3 * 60 * 1000);
+
+    const findByNhanVienId = await taiKhoanService.findTaiKhoanByNhanVienId(
+      findByEmail?.id
+    );
+
+    if (!findByNhanVienId.id)
+      return responseHandler(res, 404, "TÀI KHOẢN KHÔNG TỒN TẠI.", null, true);
+
+    const updateVerifyEmailTaiKhoan =
+      await taiKhoanService.updateVerifyEmailResetPassword(
+        findByNhanVienId?.id,
+        {
+          emailDaXacThuc: true,
+          otpQuenMatKhau: otp,
+          otpHetHanLuc: expireTime,
+        }
+      );
+
+    await sendEmail({
+      sendTo: findByEmail?.email,
+      subject: "Forgot password from Badminton Court System",
+      html: VerifyEmailTemplate({
+        name: findByEmail?.hoTen,
+        otp: otp,
+      }),
+    });
+
+    responseHandler(
+      res,
+      200,
+      "XÁC NHẬN EMAIL THÀNH CÔNG. VUI LÒNG KIỂM TRA EMAIL!"
+    );
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   loginAccount,
   signupAccount,
+  verifyEmail,
 };

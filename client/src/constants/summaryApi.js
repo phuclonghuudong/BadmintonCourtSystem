@@ -9,6 +9,10 @@ const summaryApi = {
     url: "/account/signup",
     method: "post",
   },
+  verify_email: {
+    url: "/account/verify-email",
+    method: "post",
+  },
 };
 
 export default summaryApi;

@@ -9,6 +9,7 @@ const getAllTaiKhoan = async () => {
     },
   });
 };
+
 const getAllTaiKhoanActive = async () => {
   return await prisma.taikhoan.findMany({
     where: {
@@ -16,6 +17,22 @@ const getAllTaiKhoanActive = async () => {
         NOT: -1,
       },
     },
+    include: {
+      nhanvien: true,
+      nhomquyen: true,
+    },
+  });
+};
+
+const findTaiKhoanByNhanVienId = async (id) => {
+  return await prisma.taikhoan.findFirst({
+    where: { nhanVienId: Number(id) },
+  });
+};
+
+const findTaiKhoanByNhomQuyenId = async (id) => {
+  return await prisma.taikhoan.findFirst({
+    where: { nhomQuyenId: Number(id) },
     include: {
       nhanvien: true,
       nhomquyen: true,
@@ -56,11 +73,22 @@ const createTaiKhoan = async (data) => {
       nhomQuyenId: Number(data.nhomQuyenId),
       tenDangNhap: data.tenDangNhap,
       matKhau: data.matKhau,
-      emailDaXacThuc: data.emailDaXacThuc ?? false,
-      otpQuenMatKhau: data.otpQuenMatKhau ?? null,
-      otpHetHanLuc: data.otpHetHanLuc ?? null,
-      refreshToken: data.refreshToken ?? null,
-      trangThai: data.trangThai ?? 1,
+      emailDaXacThuc: data.emailDaXacThuc || false,
+      otpQuenMatKhau: data.otpQuenMatKhau || null,
+      otpHetHanLuc: data.otpHetHanLuc || null,
+      refreshToken: data.refreshToken || null,
+      trangThai: data.trangThai || 1,
+    },
+  });
+};
+
+const updateVerifyEmailResetPassword = async (id, data) => {
+  return await prisma.taikhoan.update({
+    where: { id: Number(id) },
+    data: {
+      emailDaXacThuc: data.emailDaXacThuc,
+      otpQuenMatKhau: String(data.otpQuenMatKhau),
+      otpHetHanLuc: data.otpHetHanLuc,
     },
   });
 };
@@ -70,6 +98,9 @@ module.exports = {
   getAllTaiKhoanActive,
   findTaiKhoanById,
   findTaiKhoanByTenDangNhap,
+  findTaiKhoanByNhomQuyenId,
+  findTaiKhoanByNhanVienId,
   checkExistTenDangNhap,
   createTaiKhoan,
+  updateVerifyEmailResetPassword,
 };

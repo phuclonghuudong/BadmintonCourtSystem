@@ -1,13 +1,22 @@
-import { useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Button from "../../components/ui/Button";
 
 const OtpVerification = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [data, setData] = useState(["", "", "", "", "", ""]);
   const inputRef = useRef([]);
   const [loading, setLoading] = useState(false);
   const validateValue = Object.values(data).every((el) => el);
+
+  useEffect(() => {
+    if (!location?.state?.Email) {
+      toast.error("KHÔNG CÓ THÔNG TIN!");
+      navigate("/verify-email");
+    }
+  }, []);
 
   const handleSubmit = async () => {
     navigate("/reset-password");
@@ -54,7 +63,7 @@ const OtpVerification = () => {
           <div className="flex justify-end">
             <p className={"text-[10px] pr-2"}>Resend verification code! </p>
             <Link
-              to={"/confirm-email"}
+              to={"/verify-email"}
               className="text-orange-600 font-semibold text-[10px]"
             >
               Verify Email

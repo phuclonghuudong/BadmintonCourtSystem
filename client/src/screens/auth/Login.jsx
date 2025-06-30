@@ -5,6 +5,7 @@ import apiService from "../../apis/apiService";
 import Button from "../../components/ui/Button";
 import FormCheckBox from "../../components/ui/FormCheckBox";
 import FormInput from "../../components/ui/FormInput";
+import LoadingAlert from "../../components/ui/LoadingAlert";
 import summaryApi from "../../constants/summaryApi";
 
 const Login = () => {
@@ -73,14 +74,17 @@ const Login = () => {
           <div className="flex justify-between items-center">
             <FormCheckBox />
             <Link
-              to={"/confirm-email"}
+              to={"/verify-email"}
               className="text-orange-600 font-semibold text-[10px]"
             >
               Forgot password
             </Link>
           </div>
-
-          <Button title={"Sign in"} color={"orange"} onClick={handleSubmit} />
+          {loading ? (
+            <LoadingAlert />
+          ) : (
+            <Button title={"Sign in"} color={"orange"} onClick={handleSubmit} />
+          )}
           <Button
             icon={
               <img

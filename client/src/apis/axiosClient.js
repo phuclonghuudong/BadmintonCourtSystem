@@ -49,6 +49,8 @@ Axios.interceptors.response.use(
     const customError = error?.response?.data || {
       MESSAGE: "Đã xảy ra lỗi. Vui lòng thử lại.",
       CODE: error?.response?.status,
+      ERROR: true,
+      SUCCESS: false,
     };
 
     return Promise.reject(customError);
