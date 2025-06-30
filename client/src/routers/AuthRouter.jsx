@@ -12,7 +12,7 @@ const AuthRouter = () => {
       <div className="md:w-6/12 w-full h-full">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Login />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/sign-up" element={<SignUp />} />
             <Route path="/confirm-email" element={<ConfirmEmail />} />
             <Route path="/verify-otp" element={<OtpVerification />} />

@@ -5,6 +5,10 @@ const summaryApi = {
     url: "/account/login",
     method: "post",
   },
+  signup: {
+    url: "/account/signup",
+    method: "post",
+  },
 };
 
 export default summaryApi;

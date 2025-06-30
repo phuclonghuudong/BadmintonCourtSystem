@@ -33,9 +33,9 @@ const findTaiKhoanById = async (id) => {
   });
 };
 
-const findTaiKhoanByTenDangNhap = async (id) => {
+const findTaiKhoanByTenDangNhap = async (value) => {
   return await prisma.taikhoan.findUnique({
-    where: { tenDangNhap: tenDangNhap },
+    where: { tenDangNhap: value },
     include: {
       nhanvien: true,
       nhomquyen: true,

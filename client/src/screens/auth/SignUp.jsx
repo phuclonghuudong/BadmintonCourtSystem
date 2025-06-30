@@ -1,12 +1,16 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import apiService from "../../apis/apiService";
 import Button from "../../components/ui/Button";
 import FormInput from "../../components/ui/FormInput";
+import summaryApi from "../../constants/summaryApi";
 
 const SignUp = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     hoTen: "",
-    tenDangNhap: "'",
+    tenDangNhap: "",
     email: "",
     soDienThoai: "",
     matKhau: "",
@@ -23,6 +27,26 @@ const SignUp = () => {
         [name]: value,
       };
     });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+
+      const result = await apiService(summaryApi.signup, { data: data });
+      if (result?.ERROR) {
+        toast.error(result?.MESSAGE);
+      }
+
+      if (result?.SUCCESS) {
+        navigate("/login");
+        toast.success(result?.MESSAGE);
+      }
+    } catch (error) {
+      toast.error(error?.MESSAGE || error);
+    } finally {
+      setLoading(false);
+    }
   };
   return (
     <div className="bg-white/80 backdrop-blur-sm flex flex-col justify-center items-center gap-4 w-full h-full rounded-lg z-10 p-4">
@@ -67,9 +91,9 @@ const SignUp = () => {
             value={data?.matKhau}
             onChange={handleOnchange}
           />
-          <div class="h-2"></div>
+          <div classname="h-2"></div>
 
-          <Button title={"Get started"} color="orange" />
+          <Button title={"Get started"} color="orange" onClick={handleSubmit} />
           <Button
             icon={
               <img
@@ -85,7 +109,7 @@ const SignUp = () => {
 
         <p className="text-[10px]">
           Already have an account?{" "}
-          <Link to={"/"} className="text-orange-600 font-semibold">
+          <Link to={"/login"} className="text-orange-600 font-semibold">
             Log in
           </Link>
         </p>

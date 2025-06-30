@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import apiService from "../../apis/apiService";
 import Button from "../../components/ui/Button";
@@ -8,6 +8,7 @@ import FormInput from "../../components/ui/FormInput";
 import summaryApi from "../../constants/summaryApi";
 
 const Login = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState({
     Username: "",
     Password: "",
@@ -31,14 +32,16 @@ const Login = () => {
       setLoading(true);
 
       const response = await apiService(summaryApi.login, { data: data });
-      console.log("CHECK:", response);
-      if (response.ERROR) {
+      if (response?.ERROR) {
         toast.error(response?.MESSAGE);
       }
 
-      toast.success(response?.MESSAGE);
+      if (response?.SUCCESS) {
+        toast.success(response?.MESSAGE);
+        navigate("/");
+      }
     } catch (error) {
-      console.log(error);
+      toast.error(error?.MESSAGE);
     } finally {
       setLoading(false);
     }

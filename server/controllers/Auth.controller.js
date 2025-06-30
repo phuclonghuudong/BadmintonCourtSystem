@@ -6,13 +6,17 @@ const { responseHandler } = require("../utils/responseHandler");
 const { hashPassword, comparePassword } = require("../utils/bcrypt.util");
 const generateAccessToken = require("../utils/getAccessToken");
 const generateRefreshToken = require("../utils/generateRefreshToken");
+const {
+  isValidEmail,
+  isValidPhone,
+  isValidPassword,
+} = require("../utils/ValidateInput");
 
 const loginAccount = async (req, res, next) => {
   let { Username, Password } = req.body;
   Username = Username?.trim();
   Password = Password?.trim();
   try {
-    console.log("CHECK: ", Username, Password);
     if (!Username || !Password)
       return responseHandler(
         res,
@@ -93,6 +97,88 @@ const loginAccount = async (req, res, next) => {
   }
 };
 
+const signupAccount = async (req, res, next) => {
+  const roleCreate = process.env.ROLE_REGISTER_ACCOUNT;
+  let { tenDangNhap, hoTen, email, soDienThoai, matKhau } = req.body;
+  tenDangNhap = tenDangNhap?.replace(/\s+/g, "");
+  email = email?.trim();
+  soDienThoai = soDienThoai?.trim();
+  matKhau = matKhau?.trim();
+  hoTen = hoTen?.trim();
+  try {
+    if (!tenDangNhap || !hoTen || !email || !soDienThoai || !matKhau)
+      return responseHandler(
+        res,
+        400,
+        "Vui lòng nhập đầy đủ thông tin!",
+        null,
+        true
+      );
+
+    const checkValidEmail = await isValidEmail(email);
+    if (!checkValidEmail)
+      return responseHandler(res, 422, "EMAIL KHÔNG HỢP LỆ!", null, true);
+
+    const checkValidPhone = await isValidPhone(soDienThoai);
+    if (!checkValidPhone)
+      return responseHandler(
+        res,
+        422,
+        "SÔ ĐIỆN THOẠI KHÔNG HỢP LỆ!",
+        null,
+        true
+      );
+
+    const checkValidPassword = await isValidPassword(matKhau);
+    if (!checkValidPassword)
+      return responseHandler(
+        res,
+        422,
+        "MẬT KHẨU KHÔNG HỢP LỆ. ÍT NHẤT 6 KÍ TỰ GỒM CHỮ VÀ SỐ!",
+        null,
+        true
+      );
+
+    const findByTenDangNhap =
+      await taiKhoanService.findTaiKhoanByTenDangNhap(tenDangNhap);
+    if (findByTenDangNhap)
+      return responseHandler(res, 409, "TÊN ĐĂNG NHẬP ĐÃ TỒN TẠI!", null, true);
+
+    const findByEmail = await nhanVienService.findByEmail(email);
+    if (findByEmail)
+      return responseHandler(res, 409, "EMAIL ĐÃ TỒN TẠI!", null, true);
+
+    const findByPhone = await nhanVienService.findBySoDienThoai(soDienThoai);
+    if (findByPhone)
+      return responseHandler(res, 409, "SỐ ĐIỆN THOẠI ĐÃ TỒN TẠI!", null, true);
+
+    const createNhanVien = await nhanVienService.createNhanVien({
+      hoTen,
+      email,
+      soDienThoai,
+    });
+    const NhanVienID = createNhanVien?.id;
+    const hashPass = await hashPassword(matKhau);
+
+    if (createNhanVien) {
+      const createTaiKhoan = await taiKhoanService.createTaiKhoan({
+        nhanVienId: NhanVienID,
+        tenDangNhap,
+        nhomQuyenId: roleCreate,
+        matKhau: hashPass,
+        trangThai: 2,
+      });
+
+      if (createNhanVien) {
+        responseHandler(res, 201, "TẠO TÀI KHOẢN THÀNH CÔNG", createTaiKhoan);
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   loginAccount,
+  signupAccount,
 };

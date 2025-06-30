@@ -45,7 +45,7 @@ const findNhanVienById = async (id) => {
 };
 
 const createNhanVien = async (data) => {
-  const parsedNgaySinh = await parseBirthday(data.ngaySinh);
+  const parsedNgaySinh = await parseBirthday(data.ngaySinh || "2000-01-01");
   return await prisma.nhanvien.create({
     data: {
       hoTen: data.hoTen,
@@ -53,10 +53,10 @@ const createNhanVien = async (data) => {
       cccd: data.cccd,
       soDienThoai: data.soDienThoai,
       gioiTinh: Number(data.gioiTinh) ?? 1,
-      diaChi: data.diaChi,
+      diaChi: data.diaChi || null,
       ngaySinh: parsedNgaySinh,
-      hinhAnh: data.hinhAnh,
-      trangThai: Number(data.trangThai) ?? 1,
+      hinhAnh: data.hinhAnh || null,
+      trangThai: Number(data.trangThai) || 1,
     },
   });
 };

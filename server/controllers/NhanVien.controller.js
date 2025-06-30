@@ -71,20 +71,20 @@ const createNhanVien = async (req, res, next) => {
       );
     }
 
-    const validEmail = isValidEmail(email);
+    const validEmail = await isValidEmail(email);
     if (!validEmail)
       return responseHandler(res, 422, "EMAIL KHÔNG HỢP LỆ!", null, true);
 
-    const validCCCD = isValidCCCD(cccd);
+    const validCCCD = await isValidCCCD(cccd);
     if (!validCCCD)
       return responseHandler(res, 422, "CCCD KHÔNG HỢP LỆ!", null, true);
 
-    const validSoDienThoai = isValidPhone(soDienThoai);
+    const validSoDienThoai = await isValidPhone(soDienThoai);
     if (!validSoDienThoai)
       return responseHandler(res, 422, "SỐ ĐIỆN THOẠI KHÔNG ĐÚNG!", null, true);
 
     if (ngaySinh) {
-      const validNgaySinh = isValidBirthday(ngaySinh);
+      const validNgaySinh = await isValidBirthday(ngaySinh);
       if (!validNgaySinh) {
         return responseHandler(res, 422, "NGÀY SINH KHÔNG HỢP LỆ!", null, true);
       }

@@ -43,7 +43,7 @@ const ConfirmEmail = () => {
           <div className="flex justify-end">
             <p className={"text-[10px] pr-2"}>Already have an account? </p>
             <Link
-              to={"/"}
+              to={"/login"}
               className="text-orange-600 font-semibold text-[10px]"
             >
               Login

@@ -22,14 +22,14 @@ Axios.interceptors.request.use(
 
 Axios.interceptors.response.use(
   (response) => {
-    return response?.data || response.data;
+    return response?.data || response;
   },
   async (error) => {
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (originalRequest.url.includes("/login")) {
-        return Promise.reject(error?.response?.data || error);
+        return Promise.reject(error.response?.data || error);
       }
 
       originalRequest._retry = true;
@@ -37,7 +37,6 @@ Axios.interceptors.response.use(
       const refreshToken = tokenApi.getRefreshToken();
       if (refreshToken) {
         const newAccessToken = await refreshAccessToken(refreshToken);
-
         if (newAccessToken) {
           tokenApi.setAccessToken(newAccessToken);
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
@@ -46,7 +45,13 @@ Axios.interceptors.response.use(
       }
     }
 
-    return Promise.reject(error);
+    // Trả về lỗi Client thông báo
+    const customError = error?.response?.data || {
+      MESSAGE: "Đã xảy ra lỗi. Vui lòng thử lại.",
+      CODE: error?.response?.status,
+    };
+
+    return Promise.reject(customError);
   }
 );
 

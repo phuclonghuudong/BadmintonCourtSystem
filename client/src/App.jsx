@@ -7,7 +7,7 @@ export const App = () => {
     <>
       <Routers />
       <ToastContainer
-        position="top-right"
+        position="top-right text-[12px]"
         autoClose={3000}
         hideProgressBar={false}
         closeOnClick
