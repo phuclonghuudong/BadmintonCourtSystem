@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import apiService from "../../apis/apiService";
@@ -6,9 +7,11 @@ import Button from "../../components/ui/Button";
 import FormInput from "../../components/ui/FormInput";
 import LoadingAlert from "../../components/ui/LoadingAlert";
 import summaryApi from "../../constants/summaryApi";
+import { addAuth } from "../../redux/reducers/AuthReducer";
 
 const SignUp = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [data, setData] = useState({
     hoTen: "",
     tenDangNhap: "",
@@ -40,8 +43,9 @@ const SignUp = () => {
       }
 
       if (result?.SUCCESS) {
-        navigate("/login");
         toast.success(result?.MESSAGE);
+        dispatch(addAuth(result?.DATA));
+        navigate("/");
       }
     } catch (error) {
       toast.error(error?.MESSAGE || error);

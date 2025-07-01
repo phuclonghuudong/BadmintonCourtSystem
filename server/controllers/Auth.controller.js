@@ -70,10 +70,9 @@ const loginAccount = async (req, res, next) => {
         true
       );
     const payload = {
-      ID: checkUsername.nhanVienId,
+      ID: checkUsername.id,
+      MSNV: checkUsername.nhanVienId,
       ROLE: checkUsername.nhomQuyenId,
-      PERMISSION: checkUsername.nhomquyen.maQuyen,
-      USERNAME: checkUsername.nhanvien.hoTen,
     };
 
     const cookiesOption = {
@@ -93,6 +92,13 @@ const loginAccount = async (req, res, next) => {
     res.cookie("refreshToken", refreshToken, cookiesOption);
 
     return responseHandler(res, 200, "ĐĂNG NHẬP THÀNH CÔNG.", {
+      USER: {
+        id: checkUsername?.id,
+        hoTen: checkUsername?.nhanvien?.hoTen,
+        email: checkUsername?.nhanvien?.email,
+        role: checkUsername?.nhomquyen?.maQuyen,
+        tenQuyen: checkUsername?.nhomquyen?.tenQuyen,
+      },
       ACCESS_TOKEN: accessToken,
     });
   } catch (error) {
@@ -183,9 +189,45 @@ const signupAccount = async (req, res, next) => {
         trangThai: 2,
       });
 
-      if (createNhanVien) {
-        responseHandler(res, 201, "TẠO TÀI KHOẢN THÀNH CÔNG", createTaiKhoan);
+      const findAccount = await taiKhoanService.findTaiKhoanById(
+        createTaiKhoan?.id
+      );
+      if (!findAccount)
+        return responseHandler(res, 409, "TẠO TÀI KHOẢN THẤT BẠI!", null, true);
+
+      const payload = {
+        ID: findAccount.id,
+        MSNV: findAccount.nhanVienId,
+        ROLE: findAccount.nhomQuyenId,
+        EMAIL: findAccount.nhanvien.email,
+      };
+
+      const cookiesOption = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      };
+
+      const accessToken = await generateAccessToken(payload);
+      const refreshToken = await generateRefreshToken(payload);
+
+      if (refreshToken !== null) {
+        await authService.updateRefreshToken(findAccount?.id, refreshToken);
       }
+
+      res.cookie("accessToken", accessToken, cookiesOption);
+      res.cookie("refreshToken", refreshToken, cookiesOption);
+
+      responseHandler(res, 201, "TẠO TÀI KHOẢN THÀNH CÔNG", {
+        USER: {
+          id: findAccount?.id,
+          hoTen: findAccount?.nhanvien?.hoTen,
+          email: findAccount?.nhanvien?.email,
+          role: findAccount?.nhomquyen?.maQuyen,
+          tenQuyen: findAccount?.nhomquyen?.tenQuyen,
+        },
+        ACCESS_TOKEN: accessToken,
+      });
     }
   } catch (error) {
     next(error);

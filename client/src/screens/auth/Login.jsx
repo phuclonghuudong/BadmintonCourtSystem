@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import apiService from "../../apis/apiService";
@@ -7,9 +8,11 @@ import FormCheckBox from "../../components/ui/FormCheckBox";
 import FormInput from "../../components/ui/FormInput";
 import LoadingAlert from "../../components/ui/LoadingAlert";
 import summaryApi from "../../constants/summaryApi";
+import { addAuth } from "../../redux/reducers/AuthReducer";
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [data, setData] = useState({
     Username: "",
     Password: "",
@@ -39,6 +42,7 @@ const Login = () => {
 
       if (response?.SUCCESS) {
         toast.success(response?.MESSAGE);
+        dispatch(addAuth(response?.DATA));
         navigate("/");
       }
     } catch (error) {

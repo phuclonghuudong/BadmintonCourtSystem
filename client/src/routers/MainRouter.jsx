@@ -1,5 +1,13 @@
+import HomeScreen from "../screens/HomeScreen";
+
+import { Route, Routes } from "react-router-dom";
+
 const MainRouter = () => {
-  return <div>MainRouter</div>;
+  return (
+    <Routes>
+      <Route path="/" element={<HomeScreen />} />
+    </Routes>
+  );
 };
 
 export default MainRouter;
