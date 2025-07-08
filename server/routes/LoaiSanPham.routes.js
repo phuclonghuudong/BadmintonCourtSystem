@@ -8,10 +8,11 @@ const {
   deleteLoaiSanPham,
 } = require("../controllers/LoaiSanPham.controller");
 const ROUTES = require("../constants/routerLink");
+const { verifyToken } = require("../middlewares/verifyToken");
 
 const PATH = ROUTES.LOAI_SAN_PHAM;
 
-router.get(`${PATH.LIST}`, getAllLoaiSanPham);
+router.get(`${PATH.LIST}`, verifyToken(), getAllLoaiSanPham);
 router.get(`${PATH.DETAIL}`, getLoaiSanPhamById);
 router.post(`${PATH.CREATE}`, createLoaiSanPham);
 router.put(`${PATH.UPDATE}`, updateLoaiSanPham);

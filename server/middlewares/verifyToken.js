@@ -1,44 +1,35 @@
 const dotenv = require("dotenv");
 dotenv.config();
-const jwt = require("jsonwebtoken");
 const { responseHandler } = require("../utils/responseHandler");
+const jwt = require("jsonwebtoken");
 
-const TOKEN_SECRET_KEYS = {
-  access: process.env.SECRET_KEY_ACCESS_TOKEN || "default_access_secret",
-  refresh: process.env.SECRET_KEY_REFRESH_TOKEN || "default_refresh_secret",
-  reset: process.env.SECRET_KEY_RESET_PASSWORD || "default_reset_secret",
-};
-
-const verifyToken = (type = "access") => {
+const verifyToken = () => {
   return (req, res, next) => {
-    const secretKey = TOKEN_SECRET_KEYS[type];
-    let token = null;
+    const secretKey = process.env.SECRET_KEY_ACCESS_TOKEN || "secret Key";
+    const headers = req.headers.authorization;
+    const token = headers ? headers.split(" ")[1] : "";
 
-    const authHeader = req.headers?.authorization;
-    const tokenFromHeader =
-      authHeader && authHeader.startsWith("Bearer ")
-        ? authHeader.split(" ")[1]
-        : null;
-
-    if (type === "access" || type === "refresh") {
-      token = tokenFromHeader || req.cookies?.[`${type}Token`];
-    } else if (type === "reset") {
-      token = req.body?.resetToken || req.query?.resetToken;
-    }
-
-    if (!token) {
-      return responseHandler(res, 401, `Thiếu ${type} token!`, null, true);
-    }
+    if (!token)
+      return responseHandler(res, 401, "KHÔNG CÓ QUYỀN TRUY CẬP!", null, true);
 
     try {
-      const decoded = jwt.verify(token, secretKey);
-      req.user = decoded;
+      const decode = jwt.verify(token, secretKey);
+      console.log("verify: ", decode);
+      if (!decode)
+        return responseHandler(
+          res,
+          400,
+          "TOKEN KHÔNG HỢP LẸ HOẶC HẾT HẠN.",
+          null,
+          true
+        );
+
       next();
-    } catch (err) {
+    } catch (error) {
       return responseHandler(
         res,
-        403,
-        `${type} token không hợp lệ hoặc đã hết hạn!`,
+        401,
+        "TOKEN KHÔNG HỢP LỆ HOẶC HẾT HẠN!",
         null,
         true
       );
@@ -46,4 +37,6 @@ const verifyToken = (type = "access") => {
   };
 };
 
-module.exports = verifyToken;
+module.exports = {
+  verifyToken,
+};

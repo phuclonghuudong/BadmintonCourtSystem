@@ -8,6 +8,8 @@ module.exports = Object.freeze({
     SIGNUP: "/signup",
     VERIFY_EMAIL: "/verify-email",
     OTP_VERIFICATION: "/verify-otp",
+    RESET_PASSWORD: "/reset-password",
+    REFRESH_TOKEN: "/refresh-token",
   },
 
   NHAN_VIEN: {

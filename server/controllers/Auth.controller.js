@@ -4,7 +4,7 @@ const nhomQuyenService = require("../services/NhomQuyen.service");
 const authService = require("../services/Auth.service");
 const { responseHandler } = require("../utils/responseHandler");
 const { hashPassword, comparePassword } = require("../utils/bcrypt.util");
-const generateAccessToken = require("../utils/getAccessToken");
+const generateAccessToken = require("../utils/generateAccessToken");
 const generateRefreshToken = require("../utils/generateRefreshToken");
 const {
   isValidEmail,
@@ -370,9 +370,116 @@ const otpVerification = async (req, res, next) => {
   }
 };
 
+const resetPassword = async (req, res, next) => {
+  const { matKhau, confirmMatKhau, email } = req.body;
+  try {
+    if (!matKhau || !confirmMatKhau || !email)
+      return responseHandler(
+        res,
+        400,
+        "Vui lòng nhập đầy đủ thông tin!",
+        null,
+        true
+      );
+    if (matKhau !== confirmMatKhau)
+      return responseHandler(
+        res,
+        400,
+        "Mật khẩu và nhập lại mật khẩu không đúng!",
+        null,
+        true
+      );
+
+    const findByEmail = await nhanVienService.findByEmail(email);
+    const NhanVienID = findByEmail?.id;
+
+    if (!NhanVienID)
+      return responseHandler(res, 404, "TÀI KHOẢN KHÔNG TỒN TẠI.", null, true);
+
+    const findTaiKhoanByNhanVienId =
+      await taiKhoanService.findTaiKhoanByNhanVienId(NhanVienID);
+    if (!findTaiKhoanByNhanVienId)
+      return responseHandler(res, 404, "TÀI KHOẢN KHÔNG TỒN TẠI.", null, true);
+
+    const checkValidPassword = await isValidPassword(matKhau);
+    if (!checkValidPassword)
+      return responseHandler(
+        res,
+        422,
+        "MẬT KHẨU KHÔNG HỢP LỆ. ÍT NHẤT 6 KÍ TỰ GỒM CHỮ VÀ SỐ!",
+        null,
+        true
+      );
+
+    const hashPass = await hashPassword(matKhau);
+
+    const result = await taiKhoanService.updateResetPassword(
+      findTaiKhoanByNhanVienId?.id,
+      {
+        matKhau: hashPass,
+      }
+    );
+    if (!result)
+      return responseHandler(res, 409, "ĐỔI MẬT KHẨU THẤT BẠI!", null, true);
+
+    responseHandler(res, 200, "ĐỔI MẬT KHẨU THÀNH CÔNG.");
+  } catch (error) {
+    next(error);
+  }
+};
+
+const refreshToken = async (res, req, next) => {
+  try {
+    const token = req.cookies?.refreshToken;
+    const secretKey = process.env.SECRET_KEY_REFRESH_TOKEN || "secret key";
+    if (!token)
+      return responseHandler(res, 401, "KHÔNG CÓ REFRESH TOKEN!", null, true);
+
+    const decoded = jwt.verify(token, secretKey);
+    const userId = decoded?.ID;
+
+    if (!userId)
+      return responseHandler(res, 403, "Token không hợp lệ!", null, true);
+
+    const user = await taiKhoanService.findTaiKhoanById(userId);
+    if (!user || user?.refreshToken !== token) {
+      return responseHandler(res, 403, "Refresh token không đúng!", null, true);
+    }
+
+    const payload = {
+      ID: user.id,
+      MSNV: user.nhanVienId,
+      ROLE: user.nhomQuyenId,
+    };
+
+    const newAccessToken = await generateAccessToken(payload);
+    const newRefreshToken = await generateRefreshToken(payload);
+
+    await taiKhoanService.updateRefreshToken(userId, newRefreshToken);
+
+    const cookiesOption = {
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
+    };
+
+    res.cookie("accessToken", newAccessToken, cookiesOption);
+    res.cookie("refreshToken", newRefreshToken, cookiesOption);
+
+    return successHandler(res, 200, "LÀM MỚI THÀNH CÔNG!", {
+      ACCESS_TOKEN: newAccessToken,
+      // REFRESH_TOKEN: newRefreshToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   loginAccount,
   signupAccount,
   verifyEmail,
   otpVerification,
+  resetPassword,
+  refreshToken,
 };

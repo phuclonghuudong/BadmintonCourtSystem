@@ -2,13 +2,13 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import apiService from "../../apis/apiService";
 import Button from "../../components/ui/Button";
 import FormCheckBox from "../../components/ui/FormCheckBox";
 import FormInput from "../../components/ui/FormInput";
 import LoadingAlert from "../../components/ui/LoadingAlert";
-import summaryApi from "../../constants/summaryApi";
+import tokenApi from "../../constants/tokenApi";
 import { addAuth } from "../../redux/reducers/AuthReducer";
+import AccountService from "../../services/Account.service";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,16 +32,22 @@ const Login = () => {
   };
 
   const handleSubmit = async () => {
+    if (!validateValue) return toast.error("Vui lòng điền đầy đủ thông tin!");
+
     try {
       setLoading(true);
 
-      const response = await apiService(summaryApi.login, { data: data });
-      if (response?.ERROR) {
-        toast.error(response?.MESSAGE);
-      }
+      const response = await AccountService.login(data);
+      if (response?.ERROR) return toast.error(response?.MESSAGE);
+
+      const token = response?.DATA?.ACCESS_TOKEN;
+      if (!token) return toast.error("Token không hợp lệ");
 
       if (response?.SUCCESS) {
         toast.success(response?.MESSAGE);
+
+        tokenApi.setAccessToken(token);
+
         dispatch(addAuth(response?.DATA));
         navigate("/");
       }

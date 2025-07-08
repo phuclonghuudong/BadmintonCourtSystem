@@ -1,6 +1,6 @@
 export const baseURl = import.meta.env.VITE_BASE_URL;
 
-const summaryApi = {
+const AccountApi = {
   login: {
     url: "/account/login",
     method: "post",
@@ -29,16 +29,6 @@ const summaryApi = {
     url: "/account/refresh-token",
     method: "post",
   },
-
-  getAllLoaiSanPham: {
-    url: "/loai-san-pham/list",
-    method: "get",
-  },
-
-  getDetailAccount: {
-    url: "/tai-khoan/:id",
-    method: "get",
-  },
 };
 
-export default summaryApi;
+export default AccountApi;

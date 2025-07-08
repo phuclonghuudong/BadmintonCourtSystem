@@ -2,12 +2,12 @@ import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import apiService from "../../apis/apiService";
 import Button from "../../components/ui/Button";
 import FormInput from "../../components/ui/FormInput";
 import LoadingAlert from "../../components/ui/LoadingAlert";
-import summaryApi from "../../constants/summaryApi";
+import tokenApi from "../../constants/tokenApi";
 import { addAuth } from "../../redux/reducers/AuthReducer";
+import { AccountService } from "../../services";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -37,13 +37,14 @@ const SignUp = () => {
     try {
       setLoading(true);
 
-      const result = await apiService(summaryApi.signup, { data: data });
+      const result = await AccountService.signup(data);
       if (result?.ERROR) {
         toast.error(result?.MESSAGE);
       }
 
       if (result?.SUCCESS) {
         toast.success(result?.MESSAGE);
+        tokenApi.setAccessToken(response?.DATA?.ACCESS_TOKEN);
         dispatch(addAuth(result?.DATA));
         navigate("/");
       }
@@ -122,7 +123,7 @@ const SignUp = () => {
 
         <p className="text-[10px]">
           Already have an account?{" "}
-          <Link to={"/login"} className="text-orange-600 font-semibold">
+          <Link to={"/"} className="text-orange-600 font-semibold">
             Log in
           </Link>
         </p>

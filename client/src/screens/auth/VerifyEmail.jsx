@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import apiService from "../../apis/apiService";
 import Button from "../../components/ui/Button";
 import FormInput from "../../components/ui/FormInput";
 import LoadingAlert from "../../components/ui/LoadingAlert";
-import summaryApi from "../../constants/summaryApi";
+import { AccountService } from "../../services";
+
 const VerifyEmail = () => {
   const navigate = useNavigate();
   const [data, setData] = useState({
@@ -26,10 +26,11 @@ const VerifyEmail = () => {
   };
 
   const handleSubmit = async () => {
+    if (!validateValue) return toast.error("Vui lòng nhập đầy đủ thông tin!!");
     try {
       setLoading(true);
 
-      const result = await apiService(summaryApi.verify_email, { data: data });
+      const result = await AccountService.verify_email(data);
       if (result?.ERROR) {
         toast.error(result?.MESSAGE);
       }
@@ -64,7 +65,7 @@ const VerifyEmail = () => {
           <div className="flex justify-end">
             <p className={"text-[10px] pr-2"}>Already have an account? </p>
             <Link
-              to={"/login"}
+              to={"/"}
               className="text-orange-600 font-semibold text-[10px]"
             >
               Login

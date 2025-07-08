@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import apiService from "../../apis/apiService";
 import Button from "../../components/ui/Button";
-import summaryApi from "../../constants/summaryApi";
+import OTPInput from "../../components/ui/OTPInput";
+import { AccountService } from "../../services";
 
 const OtpVerification = () => {
   const navigate = useNavigate();
@@ -21,17 +21,21 @@ const OtpVerification = () => {
   }, []);
 
   const handleSubmit = async () => {
+    if (!validateValue) return toast.error("Vui lòng nhập đầy đủ mã OTP!");
     try {
       setLoading(true);
 
-      const result = await apiService(summaryApi.otp_verification, {
-        data: { Otp: data.join(""), Email: location?.state?.Email },
+      const result = await AccountService.otp_verification({
+        Otp: data.join(""),
+        Email: location?.state?.Email,
       });
       if (result?.ERROR) return toast.error(result?.MESSAGE);
 
       if (result?.SUCCESS) {
         toast.success(result?.MESSAGE);
-        navigate("/reset-password", { state: location?.state?.Email });
+        navigate("/reset-password", {
+          state: { Email: location?.state?.Email },
+        });
       }
     } catch (error) {
       toast.error(error?.MESSAGE || error);
@@ -48,35 +52,7 @@ const OtpVerification = () => {
         </p>
 
         <div className="w-full py-5 grid gap-2">
-          <div className="flex items-center gap-3 justify-between">
-            {data.map((e, index) => {
-              return (
-                <input
-                  key={"opt" + index}
-                  ref={(ref) => {
-                    inputRef.current[index] = ref;
-                    return ref;
-                  }}
-                  type="text"
-                  maxLength={1}
-                  value={data[index]}
-                  onChange={(e) => {
-                    const value = e.target.value;
-
-                    const newData = [...data];
-                    newData[index] = value;
-                    setData(newData);
-
-                    if (value && index < 5) {
-                      inputRef.current[index + 1].focus();
-                    }
-                  }}
-                  id="otp"
-                  className="text-center bg-blue-50 w-full max-w-16 p-2 border-none rounded outline-none focus:border-orange-200 font-semibold"
-                />
-              );
-            })}
-          </div>
+          <OTPInput data={data} setData={setData} inputRef={inputRef} />
 
           <div className="flex justify-end">
             <p className={"text-[10px] pr-2"}>Resend verification code! </p>

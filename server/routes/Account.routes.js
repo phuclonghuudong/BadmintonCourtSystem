@@ -5,6 +5,8 @@ const {
   signupAccount,
   verifyEmail,
   otpVerification,
+  resetPassword,
+  refreshToken,
 } = require("../controllers/Auth.controller");
 const ROUTES = require("../constants/routerLink");
 
@@ -14,5 +16,7 @@ router.post(`${PATH.LOGIN}`, loginAccount);
 router.post(`${PATH.SIGNUP}`, signupAccount);
 router.post(`${PATH.VERIFY_EMAIL}`, verifyEmail);
 router.put(`${PATH.OTP_VERIFICATION}`, otpVerification);
+router.put(`${PATH.RESET_PASSWORD}`, resetPassword);
+router.put(`${PATH.REFRESH_TOKEN}`, refreshToken);
 
 module.exports = router;

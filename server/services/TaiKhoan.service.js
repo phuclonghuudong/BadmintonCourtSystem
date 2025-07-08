@@ -104,6 +104,26 @@ const updateVerifyOTPResetPassword = async (id, data) => {
   });
 };
 
+const updateResetPassword = async (id, data) => {
+  return await prisma.taikhoan.update({
+    where: { id: Number(id) },
+    data: {
+      matKhau: data?.matKhau,
+    },
+  });
+};
+
+const updateRefreshToken = async (ID, refreshToken) => {
+  return await prisma.taikhoan.update({
+    where: {
+      id: ID,
+    },
+    data: {
+      refreshToken: refreshToken,
+    },
+  });
+};
+
 module.exports = {
   getAllTaiKhoan,
   getAllTaiKhoanActive,
@@ -115,4 +135,6 @@ module.exports = {
   createTaiKhoan,
   updateVerifyEmailResetPassword,
   updateVerifyOTPResetPassword,
+  updateResetPassword,
+  updateRefreshToken,
 };

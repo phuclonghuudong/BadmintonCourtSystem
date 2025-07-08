@@ -1,11 +1,12 @@
 import axios from "axios";
 import SummaryApi from "../constants/summaryApi";
-import tokenApi from "./tokenApi";
+import tokenApi from "../constants/tokenApi";
 
 const baseURL = import.meta.env.VITE_BASE_URL;
 
 const Axios = axios.create({
   baseURL,
+  // timeout: 1000,
   withCredentials: true,
 });
 
